@@ -1,0 +1,660 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-rangg" at "2026-11-05T14:54:28.8177684Z"
+Built from '6000.6/respin/6000.6.0f1-fa21a270ab12' branch; Version is '6000.6.0f1 (f7f8ed4d1e24) revision 16251117'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 11  (10.0.26300) CoreSingleLanguage' Language: 'en' Physical Memory: 16087 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-05T14:54:28Z
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 5604, path: "E:/Unity/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              e6ef3876e6f440d5b225b62f396589b2
+  Correlation Id:          2975a870b2c3ba8996cb4da0a4333e68
+  External correlation Id: 4612838923492585354
+  Machine Id:              zD4re94lP/f/uFdoXQ+TaZ0w2uY=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-rangg" (connect: 0.00s, validation: 0.04s, handshake: 0.05s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-rangg-notifications" at "2026-11-05T14:54:28.9533691Z"
+[Licensing::Module] Licensing Background thread has ended after 0.14s
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorkerHW2
+-projectPath
+E:/Unity Project/helb-game/Bloom Lunas
+-logFile
+Logs/AssetImportWorkerHW2.log
+-srvPort
+60243
+-parentPid
+11824
+-analyticsCloudUserId
+18967739262216
+-analyticsCloudProjectId
+a0524662-add6-46ba-a2cd-5ba73461d131
+-analyticsLocalProjectId
+8c2bfcf88de4520439ad4b39e3f9fd82
+-editorAnalyticsEnabled
+1
+-cbmEditorLicense
+2f3c2d399d49bd0d9a02d0cb5ffe970d476ea7f6
+-cbmMachineId
+zD4re94lP/f/uFdoXQ+TaZ0w2uY=
+-licensingIpc
+LicenseClient-rangg
+-noDiagnosticSwitchPersistentStore
+-job-worker-count
+7
+-background-job-worker-count
+8
+-asset-garbage-collectors
+1
+-force-d3d12
+-name
+AssetImport
+Successfully changed project path to: E:/Unity Project/helb-game/Bloom Lunas
+E:/Unity Project/helb-game/Bloom Lunas
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Player connection [29952]  Target information:
+
+Player connection [29952]  * "[IP] 192.168.1.16 [Port] 0 [Flags] 2 [Guid] 1657671608 [EditorId] 1657671608 [Version] 1048832 [Id] WindowsEditor(7,MSI) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [29952] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [29952] Host joined alternative multi-casting on [225.0.0.222:34997]...
+JobSystem: Creating JobQueue using job-worker-count value 7
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: 63d192cfd0cf82d6446fc9b5ad9f582d
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: true
+  - Service working directory: Library/DataStore/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 9.04 ms, found 4 plugins.
+Initialize engine version: 6000.6.0f1 (f7f8ed4d1e24)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path E:/Unity Project/helb-game/Bloom Lunas/Assets
+Forcing GfxDevice: Direct3D 12
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.2]
+    Renderer:        NVIDIA GeForce RTX 4050 Laptop GPU (ID=0x28a1)
+    Vendor:          NVIDIA
+    VRAM:            5920 MB
+    App VRAM Budget: 5152 MB
+    Driver:          32.0.16.1078
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56948
+CodeReloadManager initialized
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18967739262216-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Registered in 0.055084 seconds.
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  0.703 seconds
+Domain Reload Profiling: 1444ms
+	BeginReloadAssembly (165ms)
+	RebuildCommonClasses (6ms)
+	RebuildNativeTypeToScriptingClass (20ms)
+	initialDomainReloadingComplete (137ms)
+	LoadAllAssembliesAndSetupDomain (411ms)
+		LoadAssemblies (166ms)
+		TypeCache.Refresh (296ms)
+			TypeCache.ScanAssembly (280ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (704ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (12ms)
+			BeforeProcessingInitializeOnLoad (98ms)
+			ProcessInitializeOnLoadAttributes (89ms)
+			ProcessInitializeOnLoadMethodAttributes (427ms)
+Initializing Unity extensions:
+[Licensing::Client] Successfully resolved entitlement details
+========================================================================
+Worker process is ready to serve import requests
+Import Worker Mode flag is 0x00
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  0.765 seconds
+Domain Reload Profiling: 1793ms
+	BeginReloadAssembly (213ms)
+		DisableScriptedObjects (20ms)
+		CreateAndSetChildDomain (26ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (15ms)
+	initialDomainReloadingComplete (83ms)
+	LoadAllAssembliesAndSetupDomain (708ms)
+		LoadAssemblies (409ms)
+		TypeCache.Refresh (246ms)
+			TypeCache.ScanAssembly (228ms)
+		AnalyzeDomain (45ms)
+			BuildScriptInfoCaches (41ms)
+	FinalizeReload (766ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (7ms)
+			BeforeProcessingInitializeOnLoad (98ms)
+			ProcessInitializeOnLoadAttributes (463ms)
+			ProcessInitializeOnLoadMethodAttributes (33ms)
+			AfterProcessingInitializeOnLoad (7ms)
+		AwakeInstancesAfterBackupRestoration (7ms)
+AcceleratorClientConnectionCallback - disconnected - :0
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4658 unused Assets / (1.9 MB). Loaded Objects now: 5340.
+Memory consumption went from 311.6 MB to 309.6 MB.
+Total: 6.102900 ms (FindLiveObjects: 0.960000 ms CreateObjectMapping: 0.264500 ms MarkObjects: 4.028700 ms  DeleteObjects: 0.637000 ms)
+
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:34.350796Z
+  Time since last request: 1675.52815080000005 seconds.
+  importAddress: GUID: 70313603067c96d4484ed24f5d8c6c18 - Path: Assets/Asset 3D/kenney_blocky-characters_20/License.txt - Importer: PreviewImporter
+Importing 'GUID: 70313603067c96d4484ed24f5d8c6c18 - Path: Assets/Asset 3D/kenney_blocky-characters_20/License.txt - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 70313603067c96d4484ed24f5d8c6c18' -> (Import Result ID: '06837a9f2f48ab1a9fe30c9c0360dd6e') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3c0ec84e7d728ec945902f77b6b393b2 DependenciesID=7ba29d00820ed1fdaaf6af926a626323 StaticDependenciesID=0acc528252e6aaf1ccdaa9e287ad2506 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:40.0612446Z
+  Time since last request: 5.6897401 seconds.
+  importAddress: GUID: ce050eaa45a32534e87387008e996aa7 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models - Importer: PreviewImporter
+Importing 'GUID: ce050eaa45a32534e87387008e996aa7 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: ce050eaa45a32534e87387008e996aa7' -> (Import Result ID: '65d448b35e3e5cf77be82d1daa846af7') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f60fb6addd40977d4b1b5e94108b0277 DependenciesID=e137817cb848caac3af3908846a29818 StaticDependenciesID=a34f82f91d9753d11560272a5abb6ebe 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:42.5015799Z
+  Time since last request: 2.4386315 seconds.
+  importAddress: GUID: 2349dea1399b22d499e1b06871bffb99 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format - Importer: PreviewImporter
+Importing 'GUID: 2349dea1399b22d499e1b06871bffb99 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 2349dea1399b22d499e1b06871bffb99' -> (Import Result ID: '705521606dd53272386c3c7f8901190c') in 0.000 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1bffbaa1eed8bd3ecb5359e1cfc7541c DependenciesID=157a84fef7a429cfd12f85935abbb064 StaticDependenciesID=4e51145fc7fd1c76442bd69997bb0927 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:42.6010407Z
+  Time since last request: 0.0986647 seconds.
+  importAddress: GUID: d6cbbc0a2e10d164ca9f499eb4e32a06 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-a.fbx - Importer: PreviewImporter
+Importing 'GUID: d6cbbc0a2e10d164ca9f499eb4e32a06 - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-a.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: d6cbbc0a2e10d164ca9f499eb4e32a06' -> (Import Result ID: '18ca1d7e15cea09d62c17e63b25b9965') in 0.325 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=373f4fe8a4a4fde4f10468db92b05d1e DependenciesID=2538e60c966ed08eb8bf5b02f1f310b1 StaticDependenciesID=4c5f7830db4db8db5d2ae5ec14effe4f 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 65
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:42.9326682Z
+  Time since last request: 0.0045083 seconds.
+  importAddress: GUID: f76771d6a04e049458e608ea7b7d829f - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-l.fbx - Importer: PreviewImporter
+Importing 'GUID: f76771d6a04e049458e608ea7b7d829f - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-l.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: f76771d6a04e049458e608ea7b7d829f' -> (Import Result ID: '9eeb456d5073e115a1426d4e50abaa45') in 0.071 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fbcf4b783b549763a0a47743e95edb5a DependenciesID=a4dcfc8c026269ebbc427778ff662568 StaticDependenciesID=f4cbdb8716013341cc5063e1356c9aaa 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 65
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:43.0063212Z
+  Time since last request: 0.0021028 seconds.
+  importAddress: GUID: 3824ec931a8e9b94c8e508bc045af36e - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-h.fbx - Importer: PreviewImporter
+Importing 'GUID: 3824ec931a8e9b94c8e508bc045af36e - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-h.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 3824ec931a8e9b94c8e508bc045af36e' -> (Import Result ID: '8c4f05f07c8dd64d3e19ebf2e3f22747') in 0.074 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3244802f74d4a39802fefd7a2b6091df DependenciesID=3cd02affe20661c967df2af028307bce StaticDependenciesID=a4f5e863192432013f6b190640ec5464 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 65
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:43.0817943Z
+  Time since last request: 0.0012014 seconds.
+  importAddress: GUID: 9eba00fff0ffa1147b957764668b33cf - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-j.fbx - Importer: PreviewImporter
+Importing 'GUID: 9eba00fff0ffa1147b957764668b33cf - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-j.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 9eba00fff0ffa1147b957764668b33cf' -> (Import Result ID: 'e4a9115f92f646dd0164429edc50b490') in 0.069 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a7e699d36f0fd3268405d99ae80e7222 DependenciesID=3fa162496e374124dda115a1382bbd2e StaticDependenciesID=eca631737a8585ef1e23c3d5d71fdd52 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 65
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:54:43.1553056Z
+  Time since last request: 0.0037027 seconds.
+  importAddress: GUID: 48c90f0cd187d6c46a214dbf552252ad - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-n.fbx - Importer: PreviewImporter
+Importing 'GUID: 48c90f0cd187d6c46a214dbf552252ad - Path: Assets/Asset 3D/kenney_blocky-characters_20/Models/FBX format/character-n.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 48c90f0cd187d6c46a214dbf552252ad' -> (Import Result ID: 'e7ce433ff6d504ecf884e85f727bd673') in 0.052 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9551a1847b0fa6d9d363b8c045777e56 DependenciesID=b02066d4b59d3448a67440bd7f488be9 StaticDependenciesID=114f061457cd6f2b714e0327faf2e722 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 65
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:14.0529847Z
+  Time since last request: 150.84560579999999 seconds.
+  importAddress: GUID: c06e61628bee5e247b8b6d326c467d05 - Path: Assets/Asset 3D/kenney_hexagon-kit - Importer: PreviewImporter
+Importing 'GUID: c06e61628bee5e247b8b6d326c467d05 - Path: Assets/Asset 3D/kenney_hexagon-kit - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: c06e61628bee5e247b8b6d326c467d05' -> (Import Result ID: '49426c22fade31b894aa32126fcdf3be') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5a91702da56a59c7a2fde9c3d66e286c DependenciesID=d206e891224acc88ffc31e64d9c371c9 StaticDependenciesID=1704af88ef314f12f62f8294d25a7969 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:14.1481911Z
+  Time since last request: 0.0927362 seconds.
+  importAddress: GUID: aed3822d85ab51744bd5252da4683ebb - Path: Assets/Asset 3D/kenney_hexagon-kit/Preview.png - Importer: PreviewImporter
+Importing 'GUID: aed3822d85ab51744bd5252da4683ebb - Path: Assets/Asset 3D/kenney_hexagon-kit/Preview.png - Importer: PreviewImporter' with importer (PreviewImporter)
+[Licensing::Client] Successfully resolved entitlement details
+Imported 'GUID: aed3822d85ab51744bd5252da4683ebb' -> (Import Result ID: 'f3d42eb8024d000b687bdb4d4ab247bc') in 0.023 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=18d5f15d38806b302f73ba3340207a7e DependenciesID=da9d032f0cbabe36f393be17d2de3eb9 StaticDependenciesID=06eb2d88a40d42973d55482ed5821364 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 2
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:14.1723552Z
+  Time since last request: 0.0003458 seconds.
+  importAddress: GUID: 908897231db8d9348afccd02fcb43346 - Path: Assets/Asset 3D/kenney_hexagon-kit/Preview (Variation B).png - Importer: PreviewImporter
+Importing 'GUID: 908897231db8d9348afccd02fcb43346 - Path: Assets/Asset 3D/kenney_hexagon-kit/Preview (Variation B).png - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 908897231db8d9348afccd02fcb43346' -> (Import Result ID: '8e1c63ac31e3cd3916cae83924cec8cf') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=79d15900b0782e307c1c265e74a191c9 DependenciesID=aea162190f4d218743404118161ec0cb StaticDependenciesID=dd1422b1810c4d6478b82e427cefa3aa 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 2
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:21.4536355Z
+  Time since last request: 7.2767142 seconds.
+  importAddress: GUID: 6e953f006af0a3a438caf2edbf323819 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models - Importer: PreviewImporter
+Importing 'GUID: 6e953f006af0a3a438caf2edbf323819 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 6e953f006af0a3a438caf2edbf323819' -> (Import Result ID: '6ccf246de7469cdce5da88700948310a') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bfb70ffca4d6e485cdf24a3e11e39793 DependenciesID=a3a556f61b96874a232766bf5bd37be6 StaticDependenciesID=0ddb369e851141c296251c22f421906c 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.1568051Z
+  Time since last request: 1.7018219 seconds.
+  importAddress: GUID: c8af78edde95f604fa18b467c4527945 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format - Importer: PreviewImporter
+Importing 'GUID: c8af78edde95f604fa18b467c4527945 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: c8af78edde95f604fa18b467c4527945' -> (Import Result ID: '43a79e3fb94318adc5d315e37997ce12') in 0.000 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c19237c1a6089451667b04118ed1f8f6 DependenciesID=4f09e61cec708f06a1ed98190d5adc30 StaticDependenciesID=a06b047e944cee307ae67c4733f501f5 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.2537437Z
+  Time since last request: 0.0961165 seconds.
+  importAddress: GUID: 319f902dc8283244195baafc4d1f7d61 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/bridge.fbx - Importer: PreviewImporter
+Importing 'GUID: 319f902dc8283244195baafc4d1f7d61 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/bridge.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 319f902dc8283244195baafc4d1f7d61' -> (Import Result ID: '4b4a0c45e728bf191823ee0d3c4b608f') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5fb96b80658ade4435d4e947dd476ed2 DependenciesID=926bf859ce0b79768bc5209ab2831350 StaticDependenciesID=af05deb7d7c1eb69a90f356f9409b12b 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.2733196Z
+  Time since last request: 0.0034451 seconds.
+  importAddress: GUID: cf6ce4426d3dc7d4783ac8e5c2f1a942 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionA.fbx - Importer: PreviewImporter
+Importing 'GUID: cf6ce4426d3dc7d4783ac8e5c2f1a942 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionA.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: cf6ce4426d3dc7d4783ac8e5c2f1a942' -> (Import Result ID: '2e56b8dfdf09bcb9ce68b1240849118e') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=aa4bdf4171e225c5855dbf6336f82ae0 DependenciesID=fcc06fb4e95c3a62099498158a15d075 StaticDependenciesID=ccfdef368d9160ac2e17cc641d2dd787 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.2917967Z
+  Time since last request: 0.0009529 seconds.
+  importAddress: GUID: df1a3c48bc324e14884212108c7c8cdc - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/dirt-lumber.fbx - Importer: PreviewImporter
+Importing 'GUID: df1a3c48bc324e14884212108c7c8cdc - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/dirt-lumber.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: df1a3c48bc324e14884212108c7c8cdc' -> (Import Result ID: '6292f9516aca70e1e65494e51988fc0e') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e4dd56ad91aa473516d7f7b35e7e784 DependenciesID=1b4c8c157f550d3f67a9bbf61b316444 StaticDependenciesID=ed34f9f728049c8745e8fb4684c61299 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3066143Z
+  Time since last request: 0.0008469 seconds.
+  importAddress: GUID: b73e8440e19547c4a9d76df7ed222b5d - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-corner.fbx - Importer: PreviewImporter
+Importing 'GUID: b73e8440e19547c4a9d76df7ed222b5d - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-corner.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: b73e8440e19547c4a9d76df7ed222b5d' -> (Import Result ID: 'd50f2b1b1142ee7ab34dac794e293be9') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f4ebb99e9b09a7b6cbe1b5d662b31185 DependenciesID=c9d5ad247c40103a301ea5d1ce97c49a StaticDependenciesID=591279f305726fcfae0fcd18ff8db421 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3218088Z
+  Time since last request: 0.0008059 seconds.
+  importAddress: GUID: 975bab94fdfe9ff4f8654be16f9ffb11 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-straight.fbx - Importer: PreviewImporter
+Importing 'GUID: 975bab94fdfe9ff4f8654be16f9ffb11 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-straight.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 975bab94fdfe9ff4f8654be16f9ffb11' -> (Import Result ID: 'd326d4486bcdce59a6e95d72f9811b2e') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e2060bab1080b16f6dbc3e751aaaf9bd DependenciesID=052254dfa5c1e64b39a515095d7851a4 StaticDependenciesID=77251c328574e92bd358d8e3668bcd3c 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3373884Z
+  Time since last request: 0.0004056 seconds.
+  importAddress: GUID: 03fb807d364f20949ad9f0f2d6ac559e - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionH.fbx - Importer: PreviewImporter
+Importing 'GUID: 03fb807d364f20949ad9f0f2d6ac559e - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionH.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 03fb807d364f20949ad9f0f2d6ac559e' -> (Import Result ID: '33c6a3fedae7c9aadeaed65e2f004f87') in 0.024 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b6a418be1d413c6a0c931c51668f1025 DependenciesID=f5e3fff63a4a470274246070432fd093 StaticDependenciesID=9c6137aa859f2781881ec05c3fc8b4c3 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3626652Z
+  Time since last request: 0.0007799 seconds.
+  importAddress: GUID: 84151ad6ecf9dd54a9d5f12a0cb4fd92 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-sheep.fbx - Importer: PreviewImporter
+Importing 'GUID: 84151ad6ecf9dd54a9d5f12a0cb4fd92 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-sheep.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 84151ad6ecf9dd54a9d5f12a0cb4fd92' -> (Import Result ID: '25edfb757692129322b3d0797da50e38') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b5f91657d3f380d811e83c000aff1307 DependenciesID=621e8c7663078ca0a54040250c58be58 StaticDependenciesID=45ea757ca112b513a0adc1a698573876 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3786673Z
+  Time since last request: 0.000759 seconds.
+  importAddress: GUID: 7ca732022d5daa04ba779994a64a08fa - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-cabin.fbx - Importer: PreviewImporter
+Importing 'GUID: 7ca732022d5daa04ba779994a64a08fa - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-cabin.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 7ca732022d5daa04ba779994a64a08fa' -> (Import Result ID: 'ce6006506c5194dcaf3602204cc40df3') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d66fa4d35431dd8d6231837894c2565b DependenciesID=68c4dbf9a04e4623ae63e84df91e78a4 StaticDependenciesID=c634b7a456ff398d06697620c5d6cd68 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.3954549Z
+  Time since last request: 0.0008868 seconds.
+  importAddress: GUID: e6f963b9ac0d9d84f8ca7c41ac03b5da - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-start.fbx - Importer: PreviewImporter
+Importing 'GUID: e6f963b9ac0d9d84f8ca7c41ac03b5da - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-start.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: e6f963b9ac0d9d84f8ca7c41ac03b5da' -> (Import Result ID: '8056585881ece31292450699295a959a') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3c7d85005cbe9f74da8285116c2b5dd0 DependenciesID=567b07db952b9c185bd564a69c2857b2 StaticDependenciesID=48b4aa722aebfbb79525affb947673d0 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.4118315Z
+  Time since last request: 0.0003644 seconds.
+  importAddress: GUID: d003e3f1803067f4cad0460dc02d0c40 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-village.fbx - Importer: PreviewImporter
+Importing 'GUID: d003e3f1803067f4cad0460dc02d0c40 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-village.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: d003e3f1803067f4cad0460dc02d0c40' -> (Import Result ID: 'b0899a71874a02bd25a7791317502750') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c81dc0c39ce7394051d44cd4cf5291c1 DependenciesID=e655f9d57e6abe84f650d1489d3df640 StaticDependenciesID=cabdd21e8f85165b5a0de7bc8d505609 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.4266429Z
+  Time since last request: 0.0007016 seconds.
+  importAddress: GUID: b08438b0826a22d4ab4b940a948c4beb - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-dock.fbx - Importer: PreviewImporter
+Importing 'GUID: b08438b0826a22d4ab4b940a948c4beb - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-dock.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: b08438b0826a22d4ab4b940a948c4beb' -> (Import Result ID: '780ce920bee2c6b2f319502f4dbdeed5') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a4348baffb8c6bc949b49bc571e7ac7b DependenciesID=d92d15af2cffb4c64e47eeb6e81098ff StaticDependenciesID=de84dfe058ca01bb60624589efac8d91 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.4438461Z
+  Time since last request: 0.0005157 seconds.
+  importAddress: GUID: 76ea7d0b83b6c1a4dbf9d7c2f9368515 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionB.fbx - Importer: PreviewImporter
+Importing 'GUID: 76ea7d0b83b6c1a4dbf9d7c2f9368515 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionB.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 76ea7d0b83b6c1a4dbf9d7c2f9368515' -> (Import Result ID: 'c0cf1d235e0503ee14ab388781096c69') in 0.025 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0626957d4b4fb8954228c57270984a88 DependenciesID=32c53bf58cac5748f5e53437b91eb8ba StaticDependenciesID=dfe676a93294bfe42a1bbf6ba914fb4f 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.4709911Z
+  Time since last request: 0.0018602 seconds.
+  importAddress: GUID: 6b0f5f70272a6384fa44646421ef7843 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-crossing.fbx - Importer: PreviewImporter
+Importing 'GUID: 6b0f5f70272a6384fa44646421ef7843 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-crossing.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 6b0f5f70272a6384fa44646421ef7843' -> (Import Result ID: 'b9b43719609a950543ff05bb17a133d5') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=35520a14e8184382876bcd2da59ac77e DependenciesID=587b8324859ba82876fbe03f8e3c28d5 StaticDependenciesID=bf36fcc425f9738396a1da8f68d66111 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.4865805Z
+  Time since last request: 0.0005043 seconds.
+  importAddress: GUID: 45a9b55f13b55594cb974e36b4424532 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-end.fbx - Importer: PreviewImporter
+Importing 'GUID: 45a9b55f13b55594cb974e36b4424532 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-end.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 45a9b55f13b55594cb974e36b4424532' -> (Import Result ID: '42eb6200ceea36179d42c282f87d736f') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e14f406c63295ce288c2a19c49349436 DependenciesID=299b0f38af6d6853c31d131eece8f7ff StaticDependenciesID=1d1adc996b15665cdcb2b048e78d9625 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5026957Z
+  Time since last request: 0.0008218 seconds.
+  importAddress: GUID: 34d7db797f6f7114e87a0b3f2c1142c7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-corner-sharp.fbx - Importer: PreviewImporter
+Importing 'GUID: 34d7db797f6f7114e87a0b3f2c1142c7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-corner-sharp.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 34d7db797f6f7114e87a0b3f2c1142c7' -> (Import Result ID: 'b5f44a8b9fadaa10b89a01db84710d73') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7dd51feff792c4bed7999fe1701f885a DependenciesID=3375adbe0a0d80799c0ffb8509aeb8f0 StaticDependenciesID=cb646d2830b656f6f70047e2c5af70e1 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5167442Z
+  Time since last request: 0.0006379 seconds.
+  importAddress: GUID: b3b921d5636b9e34e8e5d2a7b827c446 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionD.fbx - Importer: PreviewImporter
+Importing 'GUID: b3b921d5636b9e34e8e5d2a7b827c446 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionD.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: b3b921d5636b9e34e8e5d2a7b827c446' -> (Import Result ID: '26bd4a7beb47fb943e205a157258cc06') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2db2a09273e9e2fbc254f69c18e25f34 DependenciesID=eb4f9d4f18d730b6cd348a7d59c83041 StaticDependenciesID=f298144be4a9f2144d67a412737c093a 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.530962Z
+  Time since last request: 0.0004006 seconds.
+  importAddress: GUID: 9c7866670e98a2c4e95f41cc99f8408b - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-wizard-tower.fbx - Importer: PreviewImporter
+Importing 'GUID: 9c7866670e98a2c4e95f41cc99f8408b - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-wizard-tower.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 9c7866670e98a2c4e95f41cc99f8408b' -> (Import Result ID: '5eca03a34327cdad4ef892e156ecc78d') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5eefc53b377ed55cdfe01e1e414a920f DependenciesID=01b886e16bcd652c6fbb5d170d54bf57 StaticDependenciesID=bd1b6aa3091525a9aed1e57a8c9801e7 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5455154Z
+  Time since last request: 0.0010278 seconds.
+  importAddress: GUID: a6488b9f2b980be429fae70d44bc967d - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-wall.fbx - Importer: PreviewImporter
+Importing 'GUID: a6488b9f2b980be429fae70d44bc967d - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-wall.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: a6488b9f2b980be429fae70d44bc967d' -> (Import Result ID: '3d4d2fa1f4f1499bc123474409d25fdf') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f8c4fbfecbedf0c4b85352f5dcf60c58 DependenciesID=b162aa04252ead2e6b5bb3197ebb0bd8 StaticDependenciesID=fde7f69004ca21cc412e6ac9682a1ee4 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5653792Z
+  Time since last request: 0.0005251 seconds.
+  importAddress: GUID: 0388df72b42d0844a8a1b48b11da4442 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-square.fbx - Importer: PreviewImporter
+Importing 'GUID: 0388df72b42d0844a8a1b48b11da4442 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-square.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 0388df72b42d0844a8a1b48b11da4442' -> (Import Result ID: '769c3b8f56717e103e89d7dddab606c6') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=95ee35d94d5dc0bad8fdd908e46d2bea DependenciesID=0cf5a1b4485bef80da6a56975c305ae9 StaticDependenciesID=a2ec42a3759020ca6b12b2b9b1e45469 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5812162Z
+  Time since last request: 0.0010414 seconds.
+  importAddress: GUID: 4f58f8bda580bd941a86623fca67338e - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionG.fbx - Importer: PreviewImporter
+Importing 'GUID: 4f58f8bda580bd941a86623fca67338e - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionG.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 4f58f8bda580bd941a86623fca67338e' -> (Import Result ID: '4db7c5545a6bfb36b579d405f8bdb7ec') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5796e8ce56b174fa89f16d15730d3275 DependenciesID=6bc68f3f1d7f3f2af6fb74eb3170a52d StaticDependenciesID=4ce3ca2a4859efc56089b441d128cdc5 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.5957884Z
+  Time since last request: 0.0009596 seconds.
+  importAddress: GUID: 05825456982abb74d91530993e2dbdcb - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-farm.fbx - Importer: PreviewImporter
+Importing 'GUID: 05825456982abb74d91530993e2dbdcb - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/building-farm.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 05825456982abb74d91530993e2dbdcb' -> (Import Result ID: 'c426aa4e52e0cb9a27a255aefede7689') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8b5c51aa2be5b479b5c10a6d55285211 DependenciesID=cf93c34e9ce9296897e36d788f38272f StaticDependenciesID=b9bd2b8083dcddbf6fbf38ffeea6cefe 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.610866Z
+  Time since last request: 0.00085 seconds.
+  importAddress: GUID: f3662a56ffa42f3428281afebeb8895a - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/grass-hill.fbx - Importer: PreviewImporter
+Importing 'GUID: f3662a56ffa42f3428281afebeb8895a - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/grass-hill.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: f3662a56ffa42f3428281afebeb8895a' -> (Import Result ID: 'f87082c2c0430ed3e008da73a96bd5b3') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=367d031b33c580c2a2c93e6897164eb3 DependenciesID=8fa7c5e43451ef0ccdf9e3e683e4420c StaticDependenciesID=c2c7d39b6207f8d454b6aaf7af15768e 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.6246734Z
+  Time since last request: 0.0008517 seconds.
+  importAddress: GUID: b9f2f764e1831464ab1f4a15a3e139e7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionC.fbx - Importer: PreviewImporter
+Importing 'GUID: b9f2f764e1831464ab1f4a15a3e139e7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionC.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: b9f2f764e1831464ab1f4a15a3e139e7' -> (Import Result ID: 'c0ff465511a484a249a3bc4f91e9bde0') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=adb4fafe4bb60b479bbf167dcc43db37 DependenciesID=4302393c9a7d88968d1eec953e5c0c4b StaticDependenciesID=d1d73e5f40bea51527c8421ab5e88c92 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.6374693Z
+  Time since last request: 0.0004754 seconds.
+  importAddress: GUID: 2332094458e996041a7f5a0ba8278262 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionF.fbx - Importer: PreviewImporter
+Importing 'GUID: 2332094458e996041a7f5a0ba8278262 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionF.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 2332094458e996041a7f5a0ba8278262' -> (Import Result ID: '457f04dea2d5997a4fcde9a9455310e1') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=952bcab1c05fb40f2d23e4407311d56d DependenciesID=cac14cb1d0a3ad55af8bf70d010c785b StaticDependenciesID=072a4941d53863b71e7e928c0738f2a8 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:23.6508735Z
+  Time since last request: 0.0005688 seconds.
+  importAddress: GUID: 3ba565ce0bc764446acc83cca80d3e54 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionE.fbx - Importer: PreviewImporter
+Importing 'GUID: 3ba565ce0bc764446acc83cca80d3e54 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/path-intersectionE.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 3ba565ce0bc764446acc83cca80d3e54' -> (Import Result ID: 'fc6ccf78bf55af70cb6f7beabe5f943b') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6a69bb8972d6274caa2829cdd2acaf2c DependenciesID=e4a560601b53aa8d0f0f6d5fec8bfafd StaticDependenciesID=6ee39276b59c56c9dfaa112cd552e387 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.7752431Z
+  Time since last request: 5.1118817 seconds.
+  importAddress: GUID: 6346dd2abec16504eb7712ffd82a8069 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionF.fbx - Importer: PreviewImporter
+Importing 'GUID: 6346dd2abec16504eb7712ffd82a8069 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-intersectionF.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 6346dd2abec16504eb7712ffd82a8069' -> (Import Result ID: '8051dc4c0c707bea6f0c603091fe1caa') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d456fdc5f906a947592b65697ddfd1c9 DependenciesID=b5d976ddf8beef0d65bd356c5905c9fe StaticDependenciesID=ea9758013e9db5efa3516668815b2de7 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.792631Z
+  Time since last request: 0.0003899 seconds.
+  importAddress: GUID: 8d25850c1d74c0d40b2b5d0777e10be8 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/stone-hill.fbx - Importer: PreviewImporter
+Importing 'GUID: 8d25850c1d74c0d40b2b5d0777e10be8 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/stone-hill.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 8d25850c1d74c0d40b2b5d0777e10be8' -> (Import Result ID: '91b72ee3104613476afcb9146adc8bad') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=862bcecf245c81bf78662f4ac253ab96 DependenciesID=8598472b2f375e30be288eefebd81f8c StaticDependenciesID=cf04e95587f5ca1763174383b2047c8e 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.8079924Z
+  Time since last request: 0.002364 seconds.
+  importAddress: GUID: f5d451b3c1963864c82e383d70ce29df - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-start.fbx - Importer: PreviewImporter
+Importing 'GUID: f5d451b3c1963864c82e383d70ce29df - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/river-start.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: f5d451b3c1963864c82e383d70ce29df' -> (Import Result ID: '902dc55db04033cc6a2047859de87e34') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5b44ed861155b3540074162a4c6be335 DependenciesID=6bb5bff4386bdc161521836d3cd59483 StaticDependenciesID=03c9a496654c0fc28af9125146414d55 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.8231126Z
+  Time since last request: 0.0005925 seconds.
+  importAddress: GUID: 171e1930001a6934597a32851c9418a7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-ship.fbx - Importer: PreviewImporter
+Importing 'GUID: 171e1930001a6934597a32851c9418a7 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-ship.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 171e1930001a6934597a32851c9418a7' -> (Import Result ID: 'b29afc9eb371299dc6da482f45656656') in 0.020 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=666e94f57bfd2e1249fd55489ea84250 DependenciesID=3aae12b1c4b206c868e500e40921a324 StaticDependenciesID=8baecb970a0557544fee60692a9980c9 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.8440902Z
+  Time since last request: 0.0003384 seconds.
+  importAddress: GUID: 8ff11cad078b9f54b970732e4e8250e4 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/water-island.fbx - Importer: PreviewImporter
+Importing 'GUID: 8ff11cad078b9f54b970732e4e8250e4 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/water-island.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 8ff11cad078b9f54b970732e4e8250e4' -> (Import Result ID: '707d2425cc931f4288906139a07b0ba5') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=478f568e71f14531a29abbb17d8897f0 DependenciesID=bb9b8f7c764273eeb1bb0f75433ce946 StaticDependenciesID=aeda9358918c0775601e8d6d623fd802 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.8612949Z
+  Time since last request: 0.0004387 seconds.
+  importAddress: GUID: c4cdc5e1b5261ad4d9fc9bfadeba86b3 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-mill.fbx - Importer: PreviewImporter
+Importing 'GUID: c4cdc5e1b5261ad4d9fc9bfadeba86b3 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-mill.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: c4cdc5e1b5261ad4d9fc9bfadeba86b3' -> (Import Result ID: '944e2cee1e8af10f26473e36fc389d7a') in 0.026 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=59df98bd2a099f1d31bcf9b0eb0a7707 DependenciesID=c39f80f076438885180fdc0450df0196 StaticDependenciesID=169d6b8d8d66cb3a7322537614495963 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 15
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.8883264Z
+  Time since last request: 0.000933 seconds.
+  importAddress: GUID: f637352195db49a44abf7d9db842f748 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-tower.fbx - Importer: PreviewImporter
+Importing 'GUID: f637352195db49a44abf7d9db842f748 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-tower.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: f637352195db49a44abf7d9db842f748' -> (Import Result ID: 'cf43481c1b6e83a4ac58d995198d4e6b') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1fe4437b3a0b29f5cff8c302a5574a0c DependenciesID=c5c40ae27d367297293ca61b5fcee55a StaticDependenciesID=13f24fe3793fdce7f3e873a0c3a49094 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.9047262Z
+  Time since last request: 0.0009942 seconds.
+  importAddress: GUID: ee61ac5ab2bd7f944908addb3060d479 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/sand-desert.fbx - Importer: PreviewImporter
+Importing 'GUID: ee61ac5ab2bd7f944908addb3060d479 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/sand-desert.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: ee61ac5ab2bd7f944908addb3060d479' -> (Import Result ID: 'f7005c532dc508528c1ae0b76d2b0b28') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e3b09c311470cae044bd08c5d383c830 DependenciesID=0ea721c1bb360727bf3eeac2cd9fba6f StaticDependenciesID=17c2be8ae74cec848e87cfd18c0a5e1f 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+========================================================================
+Received Import Request.
+  Time of request: 2026-11-05T14:57:28.9231046Z
+  Time since last request: 0.0009042 seconds.
+  importAddress: GUID: 922699ae8bd824841bfbcaa410fb9307 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-mansion.fbx - Importer: PreviewImporter
+Importing 'GUID: 922699ae8bd824841bfbcaa410fb9307 - Path: Assets/Asset 3D/kenney_hexagon-kit/Models/FBX format/unit-mansion.fbx - Importer: PreviewImporter' with importer (PreviewImporter)
+Imported 'GUID: 922699ae8bd824841bfbcaa410fb9307' -> (Import Result ID: 'ec9c9c40b5e2e31831498bd818cab8f4') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c60caf1397012613f2ee380e1df45a9a DependenciesID=faf8ba899e33417426917b9dacccff27 StaticDependenciesID=c8d2dcce0794ce5203c1c971766f4370 
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 9
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AcceleratorClientConnectionCallback - disconnected - :0
+AssetImportWorker is now disconnected from the server
+Process exiting
+[ExitDontLaunchBugReporter] Exiting without the bug reporter. Application will exit with return code 0
