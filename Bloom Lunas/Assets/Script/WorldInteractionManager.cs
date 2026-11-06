@@ -14,8 +14,11 @@ public class WorldInteractionManager : MonoBehaviour
     [Tooltip("Karakter pemain (character-e). Jika dikosongkan, akan dicari otomatis")]
     [SerializeField] private CharacterMovement playerCharacter;
 
-    [Tooltip("Sistem UI Pop up. Jika dikosongkan, akan dicari otomatis di scene")]
+    [Tooltip("Sistem UI Pop up saat gedung diklik (Opsional, kosongkan jika tidak dipakai)")]
     [SerializeField] private LocationPopupUI popupUI;
+
+    [Tooltip("Rutinitas harian otomatis (Opsional, dicari otomatis jika ada di scene)")]
+    [SerializeField] private DailyScheduleRunner scheduleRunner;
 
     [Header("Pengaturan Klik & Raycast")]
     [Tooltip("Layer bangunan yang dapat diklik (Default: Everything)")]
@@ -39,6 +42,11 @@ public class WorldInteractionManager : MonoBehaviour
         if (popupUI == null)
         {
             popupUI = FindFirstObjectByType<LocationPopupUI>();
+        }
+
+        if (scheduleRunner == null)
+        {
+            scheduleRunner = FindFirstObjectByType<DailyScheduleRunner>();
         }
     }
 
@@ -93,6 +101,13 @@ public class WorldInteractionManager : MonoBehaviour
             LocationPoint location = hit.collider.GetComponentInParent<LocationPoint>();
             if (location != null)
             {
+                // Jika karakter sedang bergerak otomatis mengikuti rutinitas jadwal,
+                // jeda rutinitas agar pemain bisa menjelajah manual di luar jadwal
+                if (scheduleRunner != null && scheduleRunner.IsControllingMovement)
+                {
+                    scheduleRunner.TogglePause();
+                }
+
                 OnLocationClicked(location);
             }
         }
@@ -110,11 +125,6 @@ public class WorldInteractionManager : MonoBehaviour
             }
         }
 
-        if (popupUI == null)
-        {
-            popupUI = FindFirstObjectByType<LocationPopupUI>();
-        }
-
         // Tutup pop-up sebelumnya saat karakter mulai bergerak menuju tujuan baru
         if (popupUI != null)
         {
@@ -124,7 +134,7 @@ public class WorldInteractionManager : MonoBehaviour
         // Dapatkan titik tujuan dengan ketinggian Y karakter saat ini
         Vector3 destination = location.GetDestination(playerCharacter.transform.position.y);
 
-        // Perintahkan karakter berjalan ke lokasi; setelah tiba, tampilkan pop-up
+        // Perintahkan karakter berjalan ke lokasi; setelah tiba, tampilkan pop-up jika ada
         playerCharacter.MoveTo(destination, () =>
         {
             if (popupUI != null)
@@ -134,4 +144,3 @@ public class WorldInteractionManager : MonoBehaviour
         });
     }
 }
-

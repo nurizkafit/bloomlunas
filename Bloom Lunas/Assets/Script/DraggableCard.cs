@@ -3,7 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+/// <summary>
+/// Kartu aktivitas. Bisa berupa template di Card Deck (kanan buku) atau kartu
+/// yang sudah ditempatkan di salah satu slot kalender.
+/// </summary>
+public class DraggableCard : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [Header("Mode Kartu")]
     [Tooltip("Jika dicentang, kartu ini bertindak sebagai template di Card Deck (saat di-drag akan membuat kartu baru ke kalender)")]
@@ -14,22 +18,27 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private TMP_Text subText;
     [SerializeField] private TMP_Text timeText;
     [SerializeField] private Image cardBackground;
+    [SerializeField] private Image accentBar;
     [SerializeField] private Button deleteButton;
+    [SerializeField] private CanvasGroup canvasGroup;
 
     [Header("Data Aktivitas")]
     [SerializeField] private ActivityData activity = new ActivityData();
 
     [HideInInspector] public Transform parentAfterDrag;
 
-    private Transform originalParent;
-    private DropSlot originalSlot;
-    private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
     private Canvas rootCanvas;
     private RectTransform rootCanvasRect;
-    private bool isClone = false;
+    private DropSlot currentSlot;
+    private PlannerBookUI planner;
+    private bool isClone;
+    private bool isDragging;
 
     public ActivityData Activity => activity;
+    public DropSlot CurrentSlot => currentSlot;
+    public bool IsDeckTemplate => isDeckTemplate;
+    public bool IsDragging => isDragging;
 
     private void Awake()
     {
@@ -40,32 +49,43 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
 
-        rootCanvas = GetComponentInParent<Canvas>();
-        if (rootCanvas != null)
-        {
-            rootCanvas = rootCanvas.rootCanvas;
-            rootCanvasRect = rootCanvas.GetComponent<RectTransform>();
-        }
+        planner = GetComponentInParent<PlannerBookUI>();
 
-        // Auto-find komponen teks jika belum di-assign di Inspector
-        if (titleText == null)
-        {
-            titleText = GetComponentInChildren<TMP_Text>();
-        }
+        if (titleText == null) titleText = FindTextByName("Title");
+        if (subText == null) subText = FindTextByName("Sub");
+        if (timeText == null) timeText = FindTextByName("Time");
+        if (cardBackground == null) cardBackground = GetComponent<Image>();
+        if (accentBar == null) accentBar = FindImageByName("Accent");
 
-        if (cardBackground == null)
+        // Pastikan background kartu selalu aktif raycast target agar bisa di-drag dan diklik
+        if (cardBackground != null)
         {
-            cardBackground = GetComponent<Image>();
+            cardBackground.raycastTarget = true;
         }
 
         if (deleteButton != null)
         {
             deleteButton.onClick.AddListener(DeleteCard);
-            // Sembunyikan tombol delete jika masih berada di deck template
-            deleteButton.gameObject.SetActive(!isDeckTemplate);
         }
 
         RefreshVisual();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        // Tangkap pointer down agar Unity EventSystem menjamin event drag dan click berjalan stabil
+    }
+
+    private TMP_Text FindTextByName(string childName)
+    {
+        Transform child = transform.Find(childName);
+        return child != null ? child.GetComponent<TMP_Text>() : null;
+    }
+
+    private Image FindImageByName(string childName)
+    {
+        Transform child = transform.Find(childName);
+        return child != null ? child.GetComponent<Image>() : null;
     }
 
     /// <summary>
@@ -78,34 +98,93 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         RefreshVisual();
     }
 
-    private void RefreshVisual()
+    /// <summary>
+    /// Menandai kartu sebagai template deck atau kartu jadwal.
+    /// </summary>
+    public void SetDeckTemplate(bool value)
     {
-        if (activity == null) return;
+        isDeckTemplate = value;
+        ShowDeleteButton(!value);
+    }
 
-        if (titleText != null)
-        {
-            titleText.text = activity.activityName;
-        }
+    public void BindSlot(DropSlot slot)
+    {
+        currentSlot = slot;
+    }
 
-        if (subText != null)
+    /// <summary>
+    /// Dipanggil DropSlot setelah kartu masuk ke slot: tampilkan hari + jam di kartu.
+    /// </summary>
+    public void SetScheduledVisual(int dayIndex, string slotTime)
+    {
+        if (activity != null)
         {
-            subText.text = activity.subtext;
+            activity.timeSlot = slotTime;
         }
 
         if (timeText != null)
         {
-            timeText.text = activity.timeSlot;
+            string day = (dayIndex >= 0 && dayIndex < GameManager.DayShortNames.Length)
+                ? GameManager.DayShortNames[dayIndex]
+                : "-";
+            timeText.text = $"{day} {slotTime}";
+            timeText.color = new Color(0.451f, 0.416f, 0.337f, 1f);
+        }
+
+        ShowDeleteButton(true);
+        RefreshVisual();
+    }
+
+    private void RefreshVisual()
+    {
+        if (activity == null) return;
+
+        if (titleText != null) titleText.text = activity.activityName;
+        if (subText != null) subText.text = activity.subtext;
+
+        if (timeText != null && currentSlot == null)
+        {
+            timeText.text = activity.category;
+            timeText.color = new Color(0.545f, 0.510f, 0.431f, 1f);
         }
 
         if (cardBackground != null && activity.cardColor != Color.clear)
         {
             cardBackground.color = activity.cardColor;
         }
+
+        if (accentBar != null)
+        {
+            accentBar.color = Darken(activity.cardColor, 0.35f);
+        }
     }
+
+    private static Color Darken(Color color, float amount)
+    {
+        return new Color(
+            Mathf.Lerp(color.r, 0f, amount),
+            Mathf.Lerp(color.g, 0f, amount),
+            Mathf.Lerp(color.b, 0f, amount),
+            Mathf.Max(0.55f, color.a));
+    }
+
+    private void ShowDeleteButton(bool visible)
+    {
+        if (deleteButton != null && !isDragging)
+        {
+            deleteButton.gameObject.SetActive(visible && !isDeckTemplate);
+        }
+        else if (deleteButton != null)
+        {
+            deleteButton.gameObject.SetActive(false);
+        }
+    }
+
+    #region Drag & Drop
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // Jika game sudah berjalan / di-pause di CityOverWorld, kartu tidak boleh dipindah
+        // Jika game sudah berjalan di CityOverWorld, jadwal tidak boleh diubah.
         if (GameManager.Instance != null && GameManager.Instance.IsGameStarted)
         {
             eventData.pointerDrag = null;
@@ -113,57 +192,85 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         EnsureRootCanvas();
+        if (rootCanvas == null) return;
 
         if (isDeckTemplate)
         {
-            // Buat duplikat dari kartu ini untuk ditarik ke dalam kalender
-            GameObject cloneObj = Instantiate(gameObject, rootCanvas.transform);
+            // Instansiasi tetap di parent asal (deck) agar PlannerBookUI bisa ditemukan,
+            // lalu BeginDrag memindahkannya ke root canvas.
+            GameObject cloneObj = Instantiate(gameObject, transform.parent, false);
             DraggableCard cloneCard = cloneObj.GetComponent<DraggableCard>();
+            if (cloneCard == null)
+            {
+                Destroy(cloneObj);
+                return;
+            }
+
+            Vector2 cardSize = rectTransform != null ? rectTransform.rect.size : new Vector2(240f, 78f);
+
             cloneCard.isDeckTemplate = false;
             cloneCard.isClone = true;
-            cloneCard.SetData(this.activity);
+            cloneCard.currentSlot = null;
+            cloneCard.SetData(activity);
+            cloneCard.ShowDeleteButton(false);
 
-            // Alihkan proses drag ke kartu clone
+            RectTransform cloneRect = cloneObj.GetComponent<RectTransform>();
+            cloneRect.anchorMin = new Vector2(0.5f, 0.5f);
+            cloneRect.anchorMax = new Vector2(0.5f, 0.5f);
+            cloneRect.pivot = new Vector2(0.5f, 0.5f);
+            cloneRect.sizeDelta = cardSize;
+            cloneObj.transform.SetAsLastSibling();
+
+            // Alihkan proses drag ke kartu salinan.
             eventData.pointerDrag = cloneObj;
-            cloneCard.StartDraggingFromClone(eventData);
+            cloneCard.BeginDrag(eventData);
             return;
         }
 
-        StartDraggingInternal();
+        currentSlot = GetComponentInParent<DropSlot>();
+        parentAfterDrag = null;
+        BeginDrag(eventData);
     }
 
-    public void StartDraggingFromClone(PointerEventData eventData)
+    /// <summary>
+    /// Memulai fase drag: angkat kartu ke atas canvas agar tidak terpotong panel.
+    /// </summary>
+    public void BeginDrag(PointerEventData eventData)
     {
         EnsureRootCanvas();
-        originalParent = null;
-        originalSlot = null;
+        if (rootCanvas == null) return;
+
+        isDragging = true;
         parentAfterDrag = null;
 
+        // Simpan ukuran kartu sebelum dilepas dari slot, lalu ubah anchor-nya ke
+        // mode bebas (0.5, 0.5) supaya ukuran tidak melar mengikuti canvas.
+        Vector2 cardSize = rectTransform != null ? rectTransform.rect.size : new Vector2(240f, 82f);
+
         transform.SetParent(rootCanvas.transform, true);
         transform.SetAsLastSibling();
-        canvasGroup.blocksRaycasts = false;
 
-        if (deleteButton != null)
+        if (rectTransform != null)
         {
-            deleteButton.gameObject.SetActive(false);
+            rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            rectTransform.sizeDelta = cardSize;
         }
 
+        if (canvasGroup != null)
+        {
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.alpha = 0.96f;
+        }
+
+        ShowDeleteButton(false);
         FollowPointer(eventData);
-    }
-
-    private void StartDraggingInternal()
-    {
-        originalParent = transform.parent;
-        originalSlot = GetComponentInParent<DropSlot>();
-        parentAfterDrag = originalParent;
-
-        transform.SetParent(rootCanvas.transform, true);
-        transform.SetAsLastSibling();
-        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!isDragging) return;
         FollowPointer(eventData);
     }
 
@@ -171,9 +278,18 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (rootCanvasRect != null)
         {
-            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(rootCanvasRect, eventData.position, eventData.pressEventCamera, out Vector3 worldPoint))
+            Camera cam = (rootCanvas != null && rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                ? null
+                : (eventData.pressEventCamera ?? (rootCanvas != null ? rootCanvas.worldCamera : null));
+
+            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                    rootCanvasRect, eventData.position, cam, out Vector3 worldPoint))
             {
                 transform.position = worldPoint;
+            }
+            else
+            {
+                transform.position = eventData.position;
             }
         }
         else
@@ -184,46 +300,118 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.blocksRaycasts = true;
+        if (!isDragging) return;
 
-        // Cek apakah kartu dijatuhkan ke slot kalender yang valid
-        if (parentAfterDrag != null && parentAfterDrag != originalParent && parentAfterDrag.GetComponent<DropSlot>() != null)
+        isDragging = false;
+
+        if (canvasGroup != null)
         {
-            // Berhasil ditempatkan di slot baru
-            if (originalSlot != null)
+            canvasGroup.blocksRaycasts = true;
+            canvasGroup.alpha = 1f;
+        }
+
+        DropSlot target = parentAfterDrag != null ? parentAfterDrag.GetComponent<DropSlot>() : null;
+        parentAfterDrag = null;
+
+        if (target != null)
+        {
+            if (target.CurrentCard == this)
             {
-                originalSlot.ClearCard();
+                SnapToSlot();
+                ShowDeleteButton(true);
+                return;
             }
 
-            DropSlot newSlot = parentAfterDrag.GetComponent<DropSlot>();
-            transform.SetParent(newSlot.transform, false);
+            if (!target.IsOccupied)
+            {
+                MoveTo(target);
+                return;
+            }
+
+            if (currentSlot != null)
+            {
+                SwapWith(target);
+                return;
+            }
+        }
+
+        Reject();
+    }
+
+    private void MoveTo(DropSlot target)
+    {
+        DropSlot from = currentSlot;
+
+        if (from != null)
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RemovePlan(from.dayIndex, from.timeSlot);
+            }
+            from.Release();
+        }
+
+        target.Place(this);
+        isClone = false;
+        SnapToSlot();
+        ShowDeleteButton(true);
+        NotifyPlanner();
+    }
+
+    private void SwapWith(DropSlot target)
+    {
+        DropSlot from = currentSlot;
+        DraggableCard other = target != null ? target.CurrentCard : null;
+
+        if (from == null || other == null)
+        {
+            Reject();
+            return;
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RemovePlan(from.dayIndex, from.timeSlot);
+            GameManager.Instance.RemovePlan(target.dayIndex, target.timeSlot);
+        }
+
+        from.Release();
+        target.Release();
+
+        from.Place(other);
+        target.Place(this);
+
+        SnapToSlot();
+        ShowDeleteButton(true);
+        NotifyPlanner();
+    }
+
+    /// <summary>
+    /// Kembalikan kartu ke tempat semula, atau hapus jika ini salinan dari deck.
+    /// </summary>
+    private void Reject()
+    {
+        if (isClone)
+        {
+            if (planner != null) planner.ShowToast("Drop the card on a free slot.");
+            Destroy(gameObject);
+            return;
+        }
+
+        if (currentSlot != null)
+        {
+            transform.SetParent(currentSlot.transform, false);
             SnapToSlot();
-
-            newSlot.AssignCard(this);
-            originalSlot = newSlot;
-            originalParent = newSlot.transform;
-
-            if (deleteButton != null)
-            {
-                deleteButton.gameObject.SetActive(true);
-            }
+            ShowDeleteButton(true);
+            if (planner != null) planner.ShowToast("That slot is already taken. Drop it on a free slot.");
         }
         else
         {
-            // Gagal ditempatkan di slot
-            if (isClone)
-            {
-                // Jika ini adalah kartu yang baru di-drag dari deck tapi gagal masuk ke slot, hapus clone
-                Destroy(gameObject);
-            }
-            else if (originalParent != null)
-            {
-                // Jika kartu yang sudah ada dipindahkan tapi gagal, kembalikan ke slot asalnya
-                transform.SetParent(originalParent, false);
-                SnapToSlot();
-            }
+            Destroy(gameObject);
         }
     }
+
+    #endregion
 
     /// <summary>
     /// Menyesuaikan ukuran dan posisi kartu agar pas di dalam kotak slot.
@@ -231,13 +419,30 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void SnapToSlot()
     {
         if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+        if (rectTransform == null) return;
 
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMin = Vector2.zero;
         rectTransform.anchorMax = Vector2.one;
         rectTransform.offsetMin = new Vector2(3f, 3f);
         rectTransform.offsetMax = new Vector2(-3f, -3f);
         rectTransform.localScale = Vector3.one;
         rectTransform.localPosition = Vector3.zero;
+        rectTransform.localRotation = Quaternion.identity;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (isDragging || planner == null) return;
+
+        if (isDeckTemplate)
+        {
+            planner.OnDeckCardClicked(this);
+        }
+        else if (currentSlot != null)
+        {
+            planner.OnScheduledCardClicked(this);
+        }
     }
 
     /// <summary>
@@ -245,23 +450,44 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     /// </summary>
     public void DeleteCard()
     {
-        if (originalSlot != null)
+        if (GameManager.Instance != null && GameManager.Instance.IsGameStarted) return;
+
+        DropSlot slot = currentSlot;
+        currentSlot = null;
+
+        if (slot != null)
         {
-            originalSlot.ClearCard();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RemovePlan(slot.dayIndex, slot.timeSlot);
+            }
+            slot.Release();
         }
+
+        NotifyPlanner();
         Destroy(gameObject);
+    }
+
+    private void NotifyPlanner()
+    {
+        if (planner != null)
+        {
+            planner.RefreshAll();
+        }
+        else if (GameManager.Instance != null)
+        {
+            // PlanChanged di GameManager sudah dipanggil oleh SavePlan / RemovePlan.
+        }
     }
 
     private void EnsureRootCanvas()
     {
-        if (rootCanvas == null)
-        {
-            rootCanvas = GetComponentInParent<Canvas>();
-            if (rootCanvas != null)
-            {
-                rootCanvas = rootCanvas.rootCanvas;
-                rootCanvasRect = rootCanvas.GetComponent<RectTransform>();
-            }
-        }
+        if (rootCanvas != null) return;
+
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+
+        rootCanvas = canvas.rootCanvas;
+        rootCanvasRect = rootCanvas.GetComponent<RectTransform>();
     }
 }

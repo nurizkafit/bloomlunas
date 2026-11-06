@@ -78,17 +78,54 @@ public class LocationPopupUI : MonoBehaviour
         var allPlans = GameManager.Instance.GetAllPlans();
         ActivityData matchedActivity = null;
 
+        string wanted = Normalize(locName);
+        int today = GameManager.Instance.CurrentDay;
+
+        if (string.IsNullOrEmpty(wanted))
+        {
+            if (plannedActivityContainer != null) plannedActivityContainer.SetActive(false);
+            return;
+        }
+
+        // Utamakan rencana hari ini yang lokasinya sama persis.
         foreach (var p in allPlans)
         {
-            if (p.activity == null) continue;
-
-            string targetLoc = p.activity.locationName.Trim();
-            if (!string.IsNullOrEmpty(targetLoc) &&
-                (locName.IndexOf(targetLoc, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 targetLoc.IndexOf(locName, StringComparison.OrdinalIgnoreCase) >= 0))
+            if (p.activity == null || p.dayIndex != today) continue;
+            if (Normalize(p.activity.locationName) == wanted)
             {
                 matchedActivity = p.activity;
                 break;
+            }
+        }
+
+        // Lalu rencana di hari lain dengan lokasi yang sama persis.
+        if (matchedActivity == null)
+        {
+            foreach (var p in allPlans)
+            {
+                if (p.activity == null) continue;
+                if (Normalize(p.activity.locationName) == wanted)
+                {
+                    matchedActivity = p.activity;
+                    break;
+                }
+            }
+        }
+
+        // Terakhir, pencocokan longgar supaya data lama tetap tampil.
+        if (matchedActivity == null)
+        {
+            foreach (var p in allPlans)
+            {
+                if (p.activity == null) continue;
+
+                string targetLoc = Normalize(p.activity.locationName);
+                if (!string.IsNullOrEmpty(targetLoc) &&
+                    (targetLoc.Contains(wanted) || wanted.Contains(targetLoc)))
+                {
+                    matchedActivity = p.activity;
+                    break;
+                }
             }
         }
 
@@ -111,6 +148,18 @@ public class LocationPopupUI : MonoBehaviour
                 plannedActivityContainer.SetActive(false);
             }
         }
+    }
+
+    private static string Normalize(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return string.Empty;
+
+        System.Text.StringBuilder builder = new System.Text.StringBuilder(text.Length);
+        foreach (char c in text.ToLowerInvariant())
+        {
+            if (char.IsLetterOrDigit(c)) builder.Append(c);
+        }
+        return builder.ToString();
     }
 
     /// <summary>

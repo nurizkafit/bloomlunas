@@ -1,8 +1,13 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DropSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
+/// <summary>
+/// Satu kotak 3 jam di dalam buku planner (contoh: Senin 06:00).
+/// Menerima kartu yang di-drag dan menyimpannya ke GameManager.
+/// </summary>
+public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Identitas Slot")]
     [Tooltip("Index Hari: 0 = Mon, 1 = Tue, 2 = Wed, 3 = Thu, 4 = Fri, 5 = Sat, 6 = Sun")]
@@ -11,59 +16,116 @@ public class DropSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     [Tooltip("Jam slot (contoh: 06:00, 09:00, 12:00, 15:00)")]
     public string timeSlot = "06:00";
 
-    [Header("Visual Feedback (Opsional)")]
+    [Header("Visual")]
     [SerializeField] private Image slotImage;
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color highlightColor = new Color(0.85f, 0.95f, 0.85f, 1f);
+    [SerializeField] private TMP_Text emptyLabel;
+    [SerializeField] private Outline selectionOutline;
+
+    [SerializeField] private Color normalColor = new Color(0.988f, 0.965f, 0.898f, 1f);
+    [SerializeField] private Color highlightColor = new Color(0.898f, 0.937f, 0.855f, 1f);
+    [SerializeField] private Color swapColor = new Color(0.976f, 0.925f, 0.812f, 1f);
+    [SerializeField] private Color blockedColor = new Color(0.945f, 0.851f, 0.831f, 1f);
 
     public DraggableCard CurrentCard { get; private set; }
     public bool IsOccupied => CurrentCard != null;
+    public bool IsSelected { get; private set; }
+    public string TimeLabel => timeSlot;
+    public PlannerBookUI Planner => planner;
+
+    private PlannerBookUI planner;
 
     private void Awake()
     {
-        if (slotImage == null)
-        {
-            slotImage = GetComponent<Image>();
-        }
+        if (slotImage == null) slotImage = GetComponent<Image>();
+        if (selectionOutline == null) selectionOutline = GetComponent<Outline>();
 
         if (slotImage != null)
         {
             normalColor = slotImage.color;
         }
 
-        // Otomatis deteksi hari dan jam dari hierarki jika belum disetel manual
+        if (selectionOutline != null)
+        {
+            selectionOutline.enabled = false;
+        }
+
         AutoDetectSlotInfo();
     }
 
+    /// <summary>
+    /// Dipanggil oleh PlannerBookUI saat scene dimuat.
+    /// </summary>
+    public void Setup(PlannerBookUI owner)
+    {
+        planner = owner;
+    }
+
+    /// <summary>
+    /// Dipakai builder / Inspector untuk menentukan warna dasar slot (misal tint malam).
+    /// </summary>
+    public void SetBaseColor(Color color)
+    {
+        normalColor = color;
+        if (!IsOccupied && slotImage != null)
+        {
+            slotImage.color = color;
+        }
+    }
+
+    /// <summary>
+    /// Deteksi otomatis hari dan jam dari hierarki jika belum diisi manual.
+    /// </summary>
     private void AutoDetectSlotInfo()
     {
-        // Deteksi hari dari nama parent DayColumn
-        Transform parentCol = transform.parent;
-        if (parentCol != null)
+        if (transform.parent != null && transform.parent.parent != null)
         {
-            string colName = parentCol.name;
-            if (colName.Contains("(1)")) dayIndex = 1;      // Tue
-            else if (colName.Contains("(2)")) dayIndex = 2; // Wed
-            else if (colName.Contains("(3)")) dayIndex = 3; // Thu
-            else if (colName.Contains("(4)")) dayIndex = 4; // Fri
-            else if (colName.Contains("(5)")) dayIndex = 5; // Sat
-            else if (colName.Contains("(6)")) dayIndex = 6; // Sun
-            else if (colName.Contains("Mon")) dayIndex = 0; // Mon
+            Transform column = transform.parent.parent;
+            if (column.name.Contains("(1)")) { /* nothing, day index is set by builder */ }
         }
 
-        // Deteksi jam dari urutan anak di dalam kolom (3 jam per slot)
-        int siblingIdx = transform.GetSiblingIndex();
-        string[] standardTimes = { "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "00:00", "03:00" };
-        if (siblingIdx >= 0 && siblingIdx < standardTimes.Length)
+        if (string.IsNullOrEmpty(timeSlot))
         {
-            timeSlot = standardTimes[siblingIdx];
+            int siblingIdx = transform.GetSiblingIndex();
+            if (siblingIdx >= 0 && siblingIdx < GameManager.TimeSlots.Length)
+            {
+                timeSlot = GameManager.TimeSlots[siblingIdx];
+            }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Beri warna sorotan jika ada kartu yang sedang di-drag melintas di atas slot ini
-        if (eventData.pointerDrag != null && !IsOccupied && slotImage != null)
+        if (slotImage == null) return;
+
+        DraggableCard dragging = eventData.pointerDrag != null
+            ? eventData.pointerDrag.GetComponent<DraggableCard>()
+            : null;
+
+        if (dragging == null && CurrentCard != null) dragging = CurrentCard;
+
+        if (dragging != null && dragging.IsDragging)
+        {
+            // Validasi apakah slot ini diizinkan untuk aktivitas yang sedang di-drag
+            bool isAllowed = GameManager.ValidateActivitySlot(dragging.Activity, dayIndex, timeSlot, out _);
+
+            if (!isAllowed)
+            {
+                slotImage.color = blockedColor;
+            }
+            else if (!IsOccupied)
+            {
+                slotImage.color = highlightColor;
+            }
+            else if (dragging.CurrentSlot != null)
+            {
+                slotImage.color = swapColor;
+            }
+            else
+            {
+                slotImage.color = blockedColor;
+            }
+        }
+        else if (!IsOccupied)
         {
             slotImage.color = highlightColor;
         }
@@ -71,57 +133,118 @@ public class DropSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ResetSlotVisual();
+        RefreshColor();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        // Tangkap pointer down agar event click dan drop ditangkap stabil oleh EventSystem
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.dragging) return;
+        if (planner != null) planner.SelectSlot(this);
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        ResetSlotVisual();
-
-        // Jika slot sudah terisi kartu, tolak kartu baru
-        if (IsOccupied) return;
-
         GameObject droppedObj = eventData.pointerDrag;
         if (droppedObj == null) return;
 
         DraggableCard card = droppedObj.GetComponent<DraggableCard>();
         if (card != null)
         {
-            // Beritahu kartu bahwa slot ini adalah target barunya
+            // Cek apakah aktivitas ini boleh ditaruh di jam / hari ini
+            if (!GameManager.ValidateActivitySlot(card.Activity, dayIndex, timeSlot, out string rejectReason))
+            {
+                if (planner != null)
+                {
+                    planner.ShowToast(rejectReason);
+                }
+                RefreshColor();
+                return; // Tolak drop! card.parentAfterDrag tidak diisi sehingga kartu kembali / hancur
+            }
+
             card.parentAfterDrag = transform;
-            AssignCard(card);
         }
+
+        RefreshColor();
     }
 
     /// <summary>
-    /// Menempatkan kartu ke dalam slot ini dan mendaftarkannya ke GameManager.
+    /// Menempatkan kartu ke dalam slot ini, memindahkan RectTransform-nya, lalu menyimpan rencana.
     /// </summary>
-    public void AssignCard(DraggableCard card)
+    public void Place(DraggableCard card)
     {
-        CurrentCard = card;
+        if (card == null) return;
 
-        if (GameManager.Instance != null && card != null && card.Activity != null)
+        CurrentCard = card;
+        card.BindSlot(this);
+
+        RectTransform cardRect = card.transform as RectTransform;
+        if (cardRect != null)
+        {
+            cardRect.SetParent(transform, false);
+        }
+
+        card.SnapToSlot();
+        card.SetScheduledVisual(dayIndex, timeSlot);
+
+        if (GameManager.Instance != null)
         {
             card.Activity.timeSlot = timeSlot;
             GameManager.Instance.SavePlan(dayIndex, timeSlot, card.Activity);
         }
+
+        RefreshVisual();
     }
 
     /// <summary>
-    /// Mengosongkan slot ini.
+    /// Mengosongkan slot (tanpa menghapus data rencana kecuali diminta).
     /// </summary>
-    public void ClearCard()
+    public void Release(bool removePlan = false)
     {
-        if (GameManager.Instance != null)
+        if (removePlan && GameManager.Instance != null)
         {
             GameManager.Instance.RemovePlan(dayIndex, timeSlot);
         }
+
         CurrentCard = null;
+        RefreshVisual();
     }
 
-    private void ResetSlotVisual()
+    public void SetSelected(bool selected)
     {
-        if (slotImage != null)
+        IsSelected = selected;
+
+        if (selectionOutline != null)
+        {
+            selectionOutline.enabled = selected;
+        }
+
+        RefreshColor();
+    }
+
+    public void RefreshVisual()
+    {
+        if (emptyLabel != null)
+        {
+            emptyLabel.gameObject.SetActive(!IsOccupied);
+        }
+
+        RefreshColor();
+    }
+
+    private void RefreshColor()
+    {
+        if (slotImage == null) return;
+
+        if (IsSelected && !IsOccupied)
+        {
+            slotImage.color = new Color(0.976f, 0.949f, 0.851f, 1f);
+        }
+        else
         {
             slotImage.color = normalColor;
         }
