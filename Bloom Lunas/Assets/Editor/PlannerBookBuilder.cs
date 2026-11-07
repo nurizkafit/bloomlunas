@@ -143,10 +143,10 @@ public static class PlannerBookBuilder
 
     static void LoadAssets()
     {
-        uiFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Font/Xmind/Xmind-VariableFont_wght SDF.asset");
+        uiFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
         if (uiFont == null) uiFont = TMP_Settings.defaultFontAsset;
 
-        titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Font/Redaction/Redaction-Regular SDF.asset");
+        titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
         if (titleFont == null) titleFont = uiFont;
 
         roundedSprite = EnsureRoundedSprite(RoundedSpritePath, 22f, 24f);
@@ -425,7 +425,7 @@ public static class PlannerBookBuilder
         titleRt.pivot = new Vector2(0.5f, 1f);
         titleRt.offsetMin = new Vector2(14f, -28f);
         titleRt.offsetMax = new Vector2(-28f, -7f);
-        TextMeshProUGUI title = AddText(titleRt, "Craft", 13f, Ink, TextAlignmentOptions.MidlineLeft, null, false);
+        TextMeshProUGUI title = AddText(titleRt, "Craft", 15f, Ink, TextAlignmentOptions.MidlineLeft, null, false);
 
         // Subtext
         RectTransform subRt = MakeRect("Sub", rt);
@@ -434,12 +434,12 @@ public static class PlannerBookBuilder
         subRt.pivot = new Vector2(0.5f, 1f);
         subRt.offsetMin = new Vector2(14f, -61f);
         subRt.offsetMax = new Vector2(-10f, -29f);
-        TextMeshProUGUI sub = AddText(subRt, "3h - Home atelier", 8.8f,
+        TextMeshProUGUI sub = AddText(subRt, "3h - Home atelier", 10f,
             new Color(0.451f, 0.420f, 0.349f, 1f), TextAlignmentOptions.TopLeft);
 
         // Time / category
         RectTransform timeRt = TopLeft("Time", rt, 14f, 64f, 160f, 13f);
-        TextMeshProUGUI time = AddText(timeRt, "Production", 7.8f, InkMuted, TextAlignmentOptions.MidlineLeft, null, false);
+        TextMeshProUGUI time = AddText(timeRt, "Production", 9f, InkMuted, TextAlignmentOptions.MidlineLeft, null, false);
 
         // Delete button
         RectTransform delRt = TopRight("Delete", rt, 6f, 6f, 18f, 18f);
@@ -580,7 +580,7 @@ public static class PlannerBookBuilder
         AddText(titleRt, "BloomLunas", 25f, Gold, TextAlignmentOptions.MidlineLeft, titleFont);
 
         RectTransform subRt = TopLeft("WeekLabel", header, 19f, 43f, 230f, 14f);
-        r.weekLabel = AddText(subRt, "MONTH 1  -  WEEK 1  -  DAY 1 - 7", 7.5f, MutedText,
+        r.weekLabel = AddText(subRt, "MONTH 1  -  WEEK 1  -  DAY 1 - 7", 8.6f, MutedText,
             TextAlignmentOptions.MidlineLeft, null, false);
         r.weekLabel.characterSpacing = 1.2f;
 
@@ -614,7 +614,7 @@ public static class PlannerBookBuilder
         energyLabel.characterSpacing = 1.2f;
 
         RectTransform energyValueRt = TopRight("Value", energyRt, 11f, 5f, 100f, 16f);
-        r.energy = AddText(energyValueRt, "100 / 100", 9.5f, CreamText, TextAlignmentOptions.MidlineRight, null, false);
+        r.energy = AddText(energyValueRt, "100 / 100", 10.5f, CreamText, TextAlignmentOptions.MidlineRight, null, false);
 
         RectTransform barBg = TopLeft("BarBg", energyRt, 11f, 28f, 174f, 9f);
         AddImage(barBg, new Color(0.18f, 0.23f, 0.32f, 1f), true, false, slotSprite);
@@ -623,7 +623,7 @@ public static class PlannerBookBuilder
         r.energyFill = AddImage(barFill, new Color(0.541f, 0.784f, 0.573f, 1f), true, false, slotSprite);
 
         RectTransform energyHintRt = TopLeft("Hint", energyRt, 11f, 42f, 174f, 14f);
-        AddText(energyHintRt, "rest available today", 7.2f, MutedText, TextAlignmentOptions.MidlineLeft, null, false);
+        AddText(energyHintRt, "rest available today", 8.2f, MutedText, TextAlignmentOptions.MidlineLeft, null, false);
 
         // Warning chip
         RectTransform chipRt = RightMiddle("WarningChip", header, 180f, 176f, 30f);
@@ -633,7 +633,7 @@ public static class PlannerBookBuilder
         AddImage(dotRt, Amber, true, false, slotSprite);
 
         RectTransform chipLabelRt = TopLeft("Text", chipRt, 22f, 0f, 146f, 30f);
-        r.warningChip = AddText(chipLabelRt, "Plan looks good", 9f, Amber, TextAlignmentOptions.MidlineLeft, null, false);
+        r.warningChip = AddText(chipLabelRt, "Plan looks good", 10.5f, Amber, TextAlignmentOptions.MidlineLeft, null, false);
 
         // Review button
         RectTransform reviewRt = RightMiddle("ReviewButton", header, 16f, 150f, 42f);
@@ -641,7 +641,7 @@ public static class PlannerBookBuilder
         r.reviewButton = AddButton(reviewRt, GoldButton, true, out reviewBg);
 
         RectTransform reviewLabelRt = Stretch("Label", reviewRt, 8f, 0f, 8f, 0f);
-        AddText(reviewLabelRt, "Review plan", 11f, new Color(0.212f, 0.161f, 0.078f, 1f), TextAlignmentOptions.Center);
+        AddText(reviewLabelRt, "Review plan", 12.5f, new Color(0.212f, 0.161f, 0.078f, 1f), TextAlignmentOptions.Center);
     }
 
     struct StatWidgets
@@ -719,10 +719,10 @@ public static class PlannerBookBuilder
         Outline outline = AddOutline(bg, new Color(0.502f, 0.392f, 0.235f, 0.55f), new Vector2(1f, -1f));
 
         RectTransform titleRt = TopLeft("Title", rt, 14f, 12f, 140f, 24f);
-        TextMeshProUGUI titleTmp = AddText(titleRt, title, 14f, InkSoft, TextAlignmentOptions.MidlineLeft, titleFont, false);
+        TextMeshProUGUI titleTmp = AddText(titleRt, title, 15f, InkSoft, TextAlignmentOptions.MidlineLeft, titleFont, false);
 
         RectTransform subtitleRt = TopLeft("Subtitle", rt, 14f, 38f, 140f, 30f);
-        AddText(subtitleRt, subtitle, 8.2f, InkMuted, TextAlignmentOptions.TopLeft);
+        AddText(subtitleRt, subtitle, 9.2f, InkMuted, TextAlignmentOptions.TopLeft);
 
         r.tabs.Add(new TabRef
         {
@@ -799,16 +799,16 @@ public static class PlannerBookBuilder
         footerRt.anchorMax = new Vector2(1f, 0f);
         footerRt.pivot = new Vector2(1f, 0f);
         footerRt.anchoredPosition = new Vector2(-22f, 8f);
-        AddText(footerRt, "Week 1", 8.5f, InkMuted, TextAlignmentOptions.MidlineRight, titleFont, false);
+        AddText(footerRt, "Week 1", 9.2f, InkMuted, TextAlignmentOptions.MidlineRight, titleFont, false);
     }
 
     static void BuildPageHeader(RectTransform page, string title, string meta)
     {
         RectTransform titleRt = TopLeft("PageTitle", page, 20f, 16f, 470f, 30f);
-        AddText(titleRt, title, 18f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
+        AddText(titleRt, title, 20f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
 
         RectTransform metaRt = TopBar("PageMeta", page, 200f, 20f, 24f, 16f);
-        TextMeshProUGUI metaTmp = AddText(metaRt, meta, 7.1f, new Color(0.478f, 0.443f, 0.369f, 1f),
+        TextMeshProUGUI metaTmp = AddText(metaRt, meta, 8f, new Color(0.478f, 0.443f, 0.369f, 1f),
             TextAlignmentOptions.MidlineRight, null, false);
         metaTmp.characterSpacing = 0.8f;
     }
@@ -839,7 +839,7 @@ public static class PlannerBookBuilder
             labelRt.offsetMin = new Vector2(0f, 6f);
             labelRt.offsetMax = new Vector2(-4f, -6f);
 
-            AddText(labelRt, TimeLabels[i], 7.8f, InkMuted, TextAlignmentOptions.MidlineRight, null, false);
+            AddText(labelRt, TimeLabels[i], 8.6f, InkMuted, TextAlignmentOptions.MidlineRight, null, false);
         }
 
         foreach (int day in dayIndexes)
@@ -865,10 +865,10 @@ public static class PlannerBookBuilder
 
         RectTransform nameRt = TopLeft("DayName", head, 2f, 1f, 120f, 22f);
         bool closed = dayIndex == 6;
-        AddText(nameRt, dayName, 16f, closed ? InkMuted : Ink, TextAlignmentOptions.MidlineLeft, titleFont);
+        AddText(nameRt, dayName, 17f, closed ? InkMuted : Ink, TextAlignmentOptions.MidlineLeft, titleFont);
 
         RectTransform dayNoRt = TopRight("DayNumber", head, 2f, 4f, 60f, 14f);
-        AddText(dayNoRt, "Day " + (dayIndex + 1), 7.8f, InkMuted, TextAlignmentOptions.MidlineRight, null, false);
+        AddText(dayNoRt, "Day " + (dayIndex + 1), 8.6f, InkMuted, TextAlignmentOptions.MidlineRight, null, false);
 
         // Badge Market / Closed
         bool market = dayIndex == 0 || dayIndex == 2 || dayIndex == 5;
@@ -878,14 +878,14 @@ public static class PlannerBookBuilder
         AddImage(badgeRt, badgeColor, true, false, slotSprite);
 
         RectTransform badgeTextRt = Stretch("Text", badgeRt, 0f, 0f, 0f, 0f);
-        TextMeshProUGUI badgeText = AddText(badgeTextRt, closed ? "CLOSED" : "MARKET", 6.4f,
+        TextMeshProUGUI badgeText = AddText(badgeTextRt, closed ? "CLOSED" : "MARKET", 7.4f,
             closed ? new Color(0.541f, 0.357f, 0.318f, 1f) : new Color(0.310f, 0.396f, 0.251f, 1f),
             TextAlignmentOptions.Center, null, false);
         badgeText.characterSpacing = 0.8f;
 
         // Jumlah slot
         RectTransform slotsRt = TopLeft("SlotSummary", head, 2f, 39f, 170f, 14f);
-        TextMeshProUGUI slotsText = AddText(slotsRt, "0 slots of work", 8.2f, InkMuted,
+        TextMeshProUGUI slotsText = AddText(slotsRt, "0 slots of work", 9.2f, InkMuted,
             TextAlignmentOptions.MidlineLeft, null, false);
 
         r.days.Add(new DayRef
@@ -926,7 +926,7 @@ public static class PlannerBookBuilder
             Image slotImage = AddImage(slotRt, tint, true, true, slotSprite);
 
             RectTransform emptyRt = TopLeft("Empty", slotRt, 7f, 5f, 130f, 14f);
-            TextMeshProUGUI emptyLabel = AddText(emptyRt, label, 8f, new Color(0.510f, 0.475f, 0.396f, 1f),
+            TextMeshProUGUI emptyLabel = AddText(emptyRt, label, 9f, new Color(0.510f, 0.475f, 0.396f, 1f),
                 TextAlignmentOptions.MidlineLeft, null, false);
 
             Outline selection = AddOutline(slotImage, new Color(0.804f, 0.647f, 0.337f, 1f), new Vector2(1.4f, -1.4f));
@@ -974,13 +974,13 @@ public static class PlannerBookBuilder
         AddText(backLabelRt, "<", 12f, InkSoft, TextAlignmentOptions.Center, null, false);
 
         RectTransform deckTitleRt = Stretch("Title", topRow, 24f, 0f, 0f, 0f);
-        r.categoryTitle = AddText(deckTitleRt, "Categories", 13f, Ink, TextAlignmentOptions.MidlineLeft, null, false);
+        r.categoryTitle = AddText(deckTitleRt, "Categories", 14.5f, Ink, TextAlignmentOptions.MidlineLeft, null, false);
 
         // Hint
         RectTransform hintRt = MakeRect("Hint", deck);
         AddLayout(hintRt, -1f, 38f);
         r.deckHint = AddText(hintRt, "Drag a card into a slot, or click a slot first and then a card.",
-            8.4f, new Color(0.424f, 0.392f, 0.322f, 1f), TextAlignmentOptions.TopLeft, null, true, 4f);
+            9.8f, new Color(0.424f, 0.392f, 0.322f, 1f), TextAlignmentOptions.TopLeft, null, true, 4f);
 
         RectTransform dividerRt = MakeRect("Divider", deck);
         AddLayout(dividerRt, -1f, 1f);
@@ -1007,8 +1007,8 @@ public static class PlannerBookBuilder
 
         RectTransform tipRt = MakeRect("Tip", catView);
         AddLayout(tipRt, -1f, 52f);
-        AddText(tipRt, "Tip: every card is one 3-hour slot. Some activities only fit morning or afternoon hours.",
-            8f, InkMuted, TextAlignmentOptions.TopLeft, null, true, 4f);
+        AddText(tipRt, "Tip: each card takes 3h or 6h. Shop 08:00-19:00 Mon-Sat, exploration 06:00-15:00.",
+            9.4f, InkMuted, TextAlignmentOptions.TopLeft, null, true, 4f);
 
         r.categoriesView = catView.gameObject;
 
@@ -1053,7 +1053,7 @@ public static class PlannerBookBuilder
         // Selected slot footer
         RectTransform selectedRt = MakeRect("SelectedSlot", deck);
         AddLayout(selectedRt, -1f, 26f);
-        r.selectedSlotText = AddText(selectedRt, "No slot selected", 8f, InkMuted,
+        r.selectedSlotText = AddText(selectedRt, "No slot selected", 9f, InkMuted,
             TextAlignmentOptions.MidlineLeft, null, false);
     }
 
@@ -1076,10 +1076,10 @@ public static class PlannerBookBuilder
         AddImage(stripe, accent, true, false, slotSprite);
 
         RectTransform nameRt = Stretch("Name", rt, 18f, 8f, 34f, 8f);
-        AddText(nameRt, name, 11.5f, Ink, TextAlignmentOptions.MidlineLeft, null, true, 2f);
+        AddText(nameRt, name, 12.5f, Ink, TextAlignmentOptions.MidlineLeft, null, true, 2f);
 
         RectTransform countRt = RightMiddle("Count", rt, 8f, 24f, 24f);
-        AddText(countRt, count.ToString(), 9f, InkMuted, TextAlignmentOptions.Center, null, false);
+        AddText(countRt, count.ToString(), 10f, InkMuted, TextAlignmentOptions.Center, null, false);
 
         r.categories.Add(new CategoryRef { name = name, button = button, count = countRt.GetComponent<TextMeshProUGUI>() });
     }
@@ -1097,22 +1097,22 @@ public static class PlannerBookBuilder
         AddImage(inner, PageCream, true, false);
 
         RectTransform titleRt = TopLeft("Title", inner, 56f, 44f, 700f, 44f);
-        AddText(titleRt, title, 30f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
+        AddText(titleRt, title, 31f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
 
         RectTransform subtitleRt = TopLeft("Subtitle", inner, 58f, 92f, 760f, 20f);
-        AddText(subtitleRt, subtitle, 9.5f, InkMuted, TextAlignmentOptions.MidlineLeft);
+        AddText(subtitleRt, subtitle, 10f, InkMuted, TextAlignmentOptions.MidlineLeft);
 
         AddDivider(inner, 124f, 56f, 56f, LineSoft);
 
         RectTransform bodyRt = Stretch("Body", inner, 58f, 64f, 58f, 154f);
-        body = AddText(bodyRt, "", 12.5f, InkSoft, TextAlignmentOptions.TopLeft, null, true, 10f);
+        body = AddText(bodyRt, "", 13.5f, InkSoft, TextAlignmentOptions.TopLeft, null, true, 10f);
 
         RectTransform footerRt = TopRight("Footer", inner, 40f, 0f, 260f, 18f);
         footerRt.anchorMin = new Vector2(1f, 0f);
         footerRt.anchorMax = new Vector2(1f, 0f);
         footerRt.pivot = new Vector2(1f, 0f);
         footerRt.anchoredPosition = new Vector2(-40f, 22f);
-        AddText(footerRt, "BloomLunas  -  Week 1", 8f, InkMuted, TextAlignmentOptions.MidlineRight, titleFont, false);
+        AddText(footerRt, "BloomLunas  -  Week 1", 9f, InkMuted, TextAlignmentOptions.MidlineRight, titleFont, false);
 
         return page.gameObject;
     }
@@ -1146,10 +1146,10 @@ public static class PlannerBookBuilder
         AddImage(panel, PageCream, true, false);
 
         RectTransform titleRt = TopLeft("Title", panel, 34f, 24f, 520f, 34f);
-        AddText(titleRt, "Review plan", 25f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
+        AddText(titleRt, "Review plan", 27f, Ink, TextAlignmentOptions.MidlineLeft, titleFont);
 
         RectTransform subtitleRt = TopLeft("Subtitle", panel, 36f, 58f, 620f, 20f);
-        AddText(subtitleRt, "Week 1  -  Day 1 to 7  -  check everything before you start.", 9.2f, InkMuted,
+        AddText(subtitleRt, "Week 1  -  Day 1 to 7  -  check everything before you start.", 10f, InkMuted,
             TextAlignmentOptions.MidlineLeft);
 
         RectTransform closeRt = TopRight("CloseX", panel, 22f, 20f, 28f, 28f);
@@ -1162,7 +1162,7 @@ public static class PlannerBookBuilder
         AddDivider(panel, 92f, 34f, 34f, LineSoft);
 
         RectTransform summaryLabelRt = TopLeft("SummaryLabel", panel, 36f, 104f, 300f, 14f);
-        TextMeshProUGUI summaryLabel = AddText(summaryLabelRt, "YOUR WEEK", 7.6f, InkMuted,
+        TextMeshProUGUI summaryLabel = AddText(summaryLabelRt, "YOUR WEEK", 8.4f, InkMuted,
             TextAlignmentOptions.MidlineLeft, null, false);
         summaryLabel.characterSpacing = 1.4f;
 
@@ -1178,7 +1178,7 @@ public static class PlannerBookBuilder
         content.anchoredPosition = Vector2.zero;
         content.sizeDelta = Vector2.zero;
 
-        r.reviewSummary = AddText(content, "", 12.2f, new Color(0.298f, 0.271f, 0.220f, 1f),
+        r.reviewSummary = AddText(content, "", 13f, new Color(0.298f, 0.271f, 0.220f, 1f),
             TextAlignmentOptions.TopLeft, null, true, 7f);
 
         ContentSizeFitter summaryFitter = content.gameObject.AddComponent<ContentSizeFitter>();
@@ -1197,12 +1197,12 @@ public static class PlannerBookBuilder
         AddImage(warnBox, new Color(0.973f, 0.937f, 0.859f, 1f), true, false);
 
         RectTransform warnLabelRt = TopLeft("Label", warnBox, 14f, 8f, 300f, 14f);
-        TextMeshProUGUI warnLabel = AddText(warnLabelRt, "WARNINGS", 7.2f, InkMuted, TextAlignmentOptions.MidlineLeft,
+        TextMeshProUGUI warnLabel = AddText(warnLabelRt, "WARNINGS", 8.2f, InkMuted, TextAlignmentOptions.MidlineLeft,
             null, false);
         warnLabel.characterSpacing = 1.4f;
 
         RectTransform warnTextRt = TopLeft("Text", warnBox, 14f, 24f, 664f, 60f);
-        r.reviewWarnings = AddText(warnTextRt, "", 10f, new Color(0.416f, 0.290f, 0.157f, 1f),
+        r.reviewWarnings = AddText(warnTextRt, "", 11f, new Color(0.416f, 0.290f, 0.157f, 1f),
             TextAlignmentOptions.TopLeft, null, true, 4f);
 
         // Tombol
@@ -1210,13 +1210,13 @@ public static class PlannerBookBuilder
         Image keepBg;
         r.closeReview = AddButton(keepRt, new Color(0.169f, 0.208f, 0.278f, 1f), true, out keepBg);
         RectTransform keepLabelRt = Stretch("Label", keepRt, 0f, 0f, 0f, 0f);
-        AddText(keepLabelRt, "Keep planning", 10.5f, CreamText, TextAlignmentOptions.Center, null, false);
+        AddText(keepLabelRt, "Keep planning", 11.5f, CreamText, TextAlignmentOptions.Center, null, false);
 
         RectTransform startRt = TopLeft("StartAnyway", panel, 536f, 548f, 190f, 44f);
         Image startBg;
         r.startAnyway = AddButton(startRt, GoldButtonIdle, true, out startBg);
         RectTransform startLabelRt = Stretch("Label", startRt, 0f, 0f, 0f, 0f);
-        AddText(startLabelRt, "Start anyway", 10.5f, new Color(0.212f, 0.161f, 0.078f, 1f),
+        AddText(startLabelRt, "Start anyway", 11.5f, new Color(0.212f, 0.161f, 0.078f, 1f),
             TextAlignmentOptions.Center, null, false);
 
         modal.gameObject.SetActive(false);
@@ -1246,7 +1246,7 @@ public static class PlannerBookBuilder
         r.toastGroup = toast.gameObject.AddComponent<CanvasGroup>();
 
         RectTransform textRt = Stretch("Text", toast, 16f, 0f, 16f, 0f);
-        r.toastText = AddText(textRt, "", 10.2f, CreamText, TextAlignmentOptions.Center, null, false);
+        r.toastText = AddText(textRt, "", 11f, CreamText, TextAlignmentOptions.Center, null, false);
 
         r.toastRoot = toast.gameObject;
         toast.gameObject.SetActive(false);

@@ -233,29 +233,28 @@ public class PlannerBookUI : MonoBehaviour
         // Nama lokasi harus sama dengan LocationPoint yang ada di CityOverWorld:
         // Home, Gathering area, Adventurer Guild, Home drying yard, Market.
 
+        // 7 kartu sesuai aturan: Production (2), Shop (1), Fieldwork (1), Guild (3).
         // Production
         defaultActivities.Add(new ActivityData("craft", "Craft", "Production", "Home",
-            "3h - Home atelier", production));
+            "3h - needs ingredients", production));
         defaultActivities.Add(new ActivityData("processing", "Processing", "Production", "Home",
-            "3h - Home atelier", production));
+            "3h - choose station", production));
 
         // Shop
-        defaultActivities.Add(new ActivityData("open_shop", "Open shop", "Shop", "Home",
-            "6h - Home shop", shop));
+        defaultActivities.Add(new ActivityData("open_shop", "Open shop", "Shop", "Market",
+            "3h / 6h - Market, Mon-Sat 08:00-19:00", shop));
 
         // Fieldwork
         defaultActivities.Add(new ActivityData("exploration", "Exploration", "Fieldwork", "Gathering area",
-            "3h - Gathering area (City zone)", fieldwork));
-        defaultActivities.Add(new ActivityData("forage", "Forage", "Fieldwork", "Gathering area",
-            "2h - Gathering area", fieldwork));
+            "3h / 6h - 06:00-15:00", fieldwork));
 
         // Guild / Organization
         defaultActivities.Add(new ActivityData("appointment", "Appointment", "Guild / Organization", "Adventurer Guild",
-            "3h - Adventurer Guild", guild));
+            "3h - Mon-Sat 08:00-17:00", guild));
         defaultActivities.Add(new ActivityData("commission", "Commission", "Guild / Organization", "Adventurer Guild",
-            "1 slot - Mon-Sat 8-17", guild));
+            "3h - Mon-Sat 08:00-17:00", guild));
         defaultActivities.Add(new ActivityData("visit", "Visit", "Guild / Organization", "Home drying yard",
-            "1 slot - Mon-Wed-Sat 8-12", guild));
+            "3h - Mon, Wed, Sat 08:00-12:00", guild));
     }
 
     #endregion
@@ -299,6 +298,14 @@ public class PlannerBookUI : MonoBehaviour
     #endregion
 
     #region Day Summaries & Header
+
+    public void RefreshSlotVisuals()
+    {
+        foreach (DropSlot slot in FindObjectsByType<DropSlot>(FindObjectsInactive.Exclude))
+        {
+            slot.RefreshVisual();
+        }
+    }
 
     public void RefreshAll()
     {
@@ -548,6 +555,11 @@ public class PlannerBookUI : MonoBehaviour
             ShowToast("That slot is taken. Pick another one.");
             return;
         }
+        if (selectedSlot.IsReserved)
+        {
+            ShowToast("That slot is the second half of a 6h card.");
+            return;
+        }
 
         PlaceActivity(card.Activity, selectedSlot);
     }
@@ -591,11 +603,17 @@ public class PlannerBookUI : MonoBehaviour
     /// </summary>
     private void PlaceActivity(ActivityData data, DropSlot slot)
     {
-        if (data == null || slot == null || slot.IsOccupied) return;
+        if (data == null || slot == null || slot.IsBlockedSlot) return;
         if (cardPrefab == null) return;
 
         // Cek validasi aturan slot
         if (!GameManager.ValidateActivitySlot(data, slot.dayIndex, slot.timeSlot, out string rejectReason))
+        {
+            ShowToast(rejectReason);
+            return;
+        }
+
+        if (GameManager.Instance != null && !GameManager.Instance.CanPlaceAt(slot.dayIndex, slot.timeSlot, data, out rejectReason))
         {
             ShowToast(rejectReason);
             return;
@@ -634,6 +652,11 @@ public class PlannerBookUI : MonoBehaviour
 
         SetSelectedSlot(slot, true);
         ShowCategoriesList();
+
+        if (slot.IsReserved)
+        {
+            ShowToast("That slot is the second half of a 6h card.");
+        }
 
         string day = GameManager.DayShortNames[Mathf.Clamp(slot.dayIndex, 0, 6)];
         if (deckHintText != null)

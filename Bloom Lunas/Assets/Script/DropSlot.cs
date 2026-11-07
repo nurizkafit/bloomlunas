@@ -29,10 +29,13 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
     public DraggableCard CurrentCard { get; private set; }
     public bool IsOccupied => CurrentCard != null;
     public bool IsSelected { get; private set; }
+    public bool IsReserved => GameManager.Instance != null && GameManager.Instance.IsSlotReserved(dayIndex, timeSlot);
+    public bool IsBlockedSlot => IsOccupied || IsReserved;
     public string TimeLabel => timeSlot;
     public PlannerBookUI Planner => planner;
 
     private PlannerBookUI planner;
+    private string defaultEmptyLabel = "Drop here";
 
     private void Awake()
     {
@@ -50,6 +53,8 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
         }
 
         AutoDetectSlotInfo();
+
+        if (emptyLabel != null) defaultEmptyLabel = emptyLabel.text;
     }
 
     /// <summary>
@@ -66,7 +71,7 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
     public void SetBaseColor(Color color)
     {
         normalColor = color;
-        if (!IsOccupied && slotImage != null)
+        if (!IsOccupied && !IsReserved && slotImage != null)
         {
             slotImage.color = color;
         }
@@ -108,7 +113,8 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
             // Validasi apakah slot ini diizinkan untuk aktivitas yang sedang di-drag
             bool isAllowed = GameManager.ValidateActivitySlot(dragging.Activity, dayIndex, timeSlot, out _);
 
-            if (!isAllowed)
+            bool canUse = isAllowed && (!IsReserved || (dragging.CurrentSlot != null && dragging.CurrentSlot.timeSlot == GetReservationSourceSlot()));
+            if (!canUse)
             {
                 slotImage.color = blockedColor;
             }
@@ -125,7 +131,7 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
                 slotImage.color = blockedColor;
             }
         }
-        else if (!IsOccupied)
+        else if (!IsOccupied && !IsReserved)
         {
             slotImage.color = highlightColor;
         }
@@ -147,6 +153,11 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
         if (planner != null) planner.SelectSlot(this);
     }
 
+    private string GetReservationSourceSlot()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetReservationSourceSlot(dayIndex, timeSlot) : null;
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         GameObject droppedObj = eventData.pointerDrag;
@@ -155,15 +166,33 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
         DraggableCard card = droppedObj.GetComponent<DraggableCard>();
         if (card != null)
         {
-            // Cek apakah aktivitas ini boleh ditaruh di jam / hari ini
+            if (IsReserved)
+            {
+                planner?.ShowToast("This slot is the second half of a 6h card.");
+                RefreshColor();
+                return;
+            }
+
+            if (IsOccupied && card.CurrentSlot == null)
+            {
+                planner?.ShowToast("That slot is taken. Pick another one.");
+                RefreshColor();
+                return;
+            }
+
             if (!GameManager.ValidateActivitySlot(card.Activity, dayIndex, timeSlot, out string rejectReason))
             {
-                if (planner != null)
-                {
-                    planner.ShowToast(rejectReason);
-                }
+                planner?.ShowToast(rejectReason);
                 RefreshColor();
-                return; // Tolak drop! card.parentAfterDrag tidak diisi sehingga kartu kembali / hancur
+                return;
+            }
+
+            if (!IsOccupied && GameManager.Instance != null &&
+                !GameManager.Instance.CanPlaceAt(dayIndex, timeSlot, card.Activity, out rejectReason))
+            {
+                planner?.ShowToast(rejectReason);
+                RefreshColor();
+                return;
             }
 
             card.parentAfterDrag = transform;
@@ -178,6 +207,7 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
     public void Place(DraggableCard card)
     {
         if (card == null) return;
+        if (IsReserved && CurrentCard != card) return;
 
         CurrentCard = card;
         card.BindSlot(this);
@@ -231,6 +261,10 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
         if (emptyLabel != null)
         {
             emptyLabel.gameObject.SetActive(!IsOccupied);
+            if (!IsOccupied)
+            {
+                emptyLabel.text = IsReserved ? "6h session" : defaultEmptyLabel;
+            }
         }
 
         RefreshColor();
@@ -243,6 +277,10 @@ public class DropSlot : MonoBehaviour, IPointerDownHandler, IDropHandler, IPoint
         if (IsSelected && !IsOccupied)
         {
             slotImage.color = new Color(0.976f, 0.949f, 0.851f, 1f);
+        }
+        else if (IsReserved)
+        {
+            slotImage.color = new Color(0.929f, 0.914f, 0.855f, 1f);
         }
         else
         {

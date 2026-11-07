@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: x
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
-  m_sharedMaterial: {fileID: 5687235179978430714, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -204,8 +204,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Craft
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
-  m_sharedMaterial: {fileID: 5687235179978430714, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -229,8 +229,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -341,8 +341,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 3h - Home atelier
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
-  m_sharedMaterial: {fileID: 5687235179978430714, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -366,8 +366,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8.8
-  m_fontSizeBase: 8.8
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -553,8 +553,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Production
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
-  m_sharedMaterial: {fileID: 5687235179978430714, guid: 11f0434a02233bb4c96efbb51bf54d73, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -578,8 +578,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7.8
-  m_fontSizeBase: 7.8
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -762,6 +762,9 @@ MonoBehaviour:
     timeSlot: 06:00
     subtext: 3h - Gathering area
     cardColor: {r: 0.96, g: 0.94, b: 0.88, a: 1}
+    slotsCount: 1
+    selectedRecipe: Beras kencur
+    selectedStation: Home atelier
   parentAfterDrag: {fileID: 0}
 --- !u!114 &9023173014384632959
 MonoBehaviour:

@@ -8,7 +8,7 @@ public class LocationPoint : MonoBehaviour
 
     [Tooltip("Deskripsi atau info tambahan mengenai lokasi ini")]
     [TextArea(2, 4)]
-    [SerializeField] private string locationDescription = "Open Mon 6:00-17:00 • You are here";
+    [SerializeField] private string locationDescription = "Open Mon 6:00-17:00 - You are here";
 
     [Header("Posisi Tujuan Karakter")]
     [Tooltip("Titik berdiri karakter saat sampai di gedung ini (opsional). Jika kosong, menggunakan posisi gedung ini.")]

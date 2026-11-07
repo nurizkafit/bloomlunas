@@ -105,7 +105,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int energyMax = 100;
     [SerializeField] private int xp = 0;
 
+    [Header("City Progress")]
+    [Tooltip("Slot 3 jam yang sedang berjalan di CityOverWorld (0 = 06:00 ... 7 = 03:00).")]
+    [SerializeField] private int citySlotIndex = 0;
+
     public int CurrentWeek => currentWeek;
+    public int CitySlotIndex
+    {
+        get => Mathf.Clamp(citySlotIndex, 0, GameManager.TimeSlots.Length - 1);
+        set => citySlotIndex = Mathf.Clamp(value, 0, GameManager.TimeSlots.Length - 1);
+    }
     public int CurrentDay => ((currentDay % 7) + 7) % 7;
     public string CurrentDayName => DayFullNames[CurrentDay];
     public int Gold => gold;
@@ -131,6 +140,35 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public event Action InventoryChanged;
 
+    // Bonus yang sudah diklaim: key = "day_slotStart"
+    private readonly HashSet<string> claimedBonuses = new HashSet<string>();
+
+    // Produk hasil craft (nama resep -> jumlah)
+    private readonly Dictionary<string, int> products = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+    // Harga jual produk
+    public static readonly Dictionary<string, int> ProductPrices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "Kunyit asam", 45 },
+        { "Beras kencur", 55 },
+        { "Turmeric salep", 70 },
+        { "Lemongrass balm", 70 }
+    };
+
+    // Harga bahan di Market
+    public static readonly Dictionary<string, int> MaterialPrices = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "Turmeric", 8 },
+        { "Ginger", 8 },
+        { "Kencur", 10 },
+        { "Tamarind", 6 },
+        { "Palm sugar", 10 },
+        { "Rice", 5 },
+        { "Coconut oil", 12 },
+        { "Beeswax", 15 },
+        { "Lemongrass", 6 }
+    };
+
     // Inventaris bahan (nama bahan -> jumlah)
     private readonly Dictionary<string, int> inventory = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
@@ -155,7 +193,7 @@ public class GameManager : MonoBehaviour
             }, "Fresh jamu")
         },
         {
-            "Turmeric salep", new CraftRecipe("Turmeric salep", 2, new Dictionary<string, int>
+            "Turmeric salep", new CraftRecipe("Turmeric salep", 1, new Dictionary<string, int>
             {
                 { "Turmeric", 3 },
                 { "Coconut oil", 1 },
@@ -163,7 +201,7 @@ public class GameManager : MonoBehaviour
             }, "Salep")
         },
         {
-            "Lemongrass balm", new CraftRecipe("Lemongrass balm", 2, new Dictionary<string, int>
+            "Lemongrass balm", new CraftRecipe("Lemongrass balm", 1, new Dictionary<string, int>
             {
                 { "Lemongrass", 3 },
                 { "Coconut oil", 1 },
@@ -255,6 +293,7 @@ public class GameManager : MonoBehaviour
             AddMaterial(item.Key, -item.Value);
         }
 
+        SetProduct(recipeName, GetProduct(recipeName) + 1);
         Debug.Log($"[GameManager] Berhasil membuat {recipe.outputProduct} ({recipeName})!");
         return true;
     }
@@ -279,12 +318,68 @@ public class GameManager : MonoBehaviour
         return rewards;
     }
 
+    public int GetProduct(string productName)
+    {
+        if (string.IsNullOrEmpty(productName)) return 0;
+        products.TryGetValue(productName, out int count);
+        return count;
+    }
+
+    public void SetProduct(string productName, int count)
+    {
+        products[productName] = Mathf.Max(0, count);
+        InventoryChanged?.Invoke();
+    }
+
+    public int GetProductPrice(string productName)
+    {
+        return ProductPrices.TryGetValue(productName ?? string.Empty, out int price) ? price : 30;
+    }
+
+    public bool SellProduct(string productName)
+    {
+        if (GetProduct(productName) <= 0) return false;
+        SetProduct(productName, GetProduct(productName) - 1);
+        AddGold(GetProductPrice(productName));
+        return true;
+    }
+
+    public bool BuyMaterial(string materialName)
+    {
+        if (!MaterialPrices.TryGetValue(materialName ?? string.Empty, out int price)) return false;
+        if (gold < price) return false;
+        gold -= price;
+        AddMaterial(materialName, 1);
+        InventoryChanged?.Invoke();
+        return true;
+    }
+
+    public int GetMaterialPrice(string materialName)
+    {
+        return MaterialPrices.TryGetValue(materialName ?? string.Empty, out int price) ? price : 0;
+    }
+
+    public bool HasBonusClaim(int dayIndex, string planStartSlot)
+    {
+        return claimedBonuses.Contains($"{dayIndex}_{planStartSlot}");
+    }
+
+    public void MarkBonusClaimed(int dayIndex, string planStartSlot)
+    {
+        claimedBonuses.Add($"{dayIndex}_{planStartSlot}");
+    }
+
+    public void ClearBonusClaims()
+    {
+        claimedBonuses.Clear();
+    }
+
     #endregion
 
     #region Aturan & Validasi Jadwal (Card Deck Constraints)
 
     /// <summary>
-    /// Validasi apakah aktivitas dapat ditempatkan pada hari dan jam tersebut sesuai aturan game.
+    /// Validasi aturan hari + jam + durasi untuk setiap kartu.
     /// </summary>
     public static bool ValidateActivitySlot(ActivityData activity, int dayIndex, string timeSlot, out string rejectReason)
     {
@@ -292,77 +387,212 @@ public class GameManager : MonoBehaviour
         if (activity == null || string.IsNullOrEmpty(timeSlot)) return true;
 
         string name = activity.activityName.ToLowerInvariant();
-        string id = activity.activityId.ToLowerInvariant();
+        string id = (activity.activityId ?? string.Empty).ToLowerInvariant();
 
-        // 1. ATURAN OPEN SHOP:
-        // - Hanya bisa buka hari Senin - Sabtu (Minggu tutup)
-        // - Jam buka: 08:00 - 19:00 (Slot 06:00 terlalu pagi, malam hari tutup)
-        if (name.Contains("shop") || id.Contains("shop"))
+        int start = SlotStartMinutes(timeSlot);
+        if (start < 0) return true;
+
+        int slots = Mathf.Clamp(activity.slotsCount <= 0 ? 1 : activity.slotsCount, 1, 2);
+        int end = start + slots * 180;
+
+        bool isShop = name.Contains("shop") || id.Contains("shop");
+        bool isExploration = name.Contains("exploration") || id.Contains("exploration") || id.Contains("forage");
+        bool isVisit = name.Contains("visit");
+        bool isGuild = name.Contains("commission") || name.Contains("appointment");
+        bool isCraft = name.Contains("craft");
+        bool isProcessing = name.Contains("processing");
+
+        // Open shop: Senin-Sabtu, 08:00-19:00. Durasi 3h atau 6h.
+        if (isShop)
         {
-            if (dayIndex == 6) // Minggu
-            {
-                rejectReason = "Open shop tutup di hari Minggu (hanya buka Senin–Sabtu).";
-                return false;
-            }
-
-            if (timeSlot == "06:00")
-            {
-                rejectReason = "Open shop baru buka jam 08:00 pagi (slot 06:00 terlalu pagi).";
-                return false;
-            }
-
-            if (timeSlot == "18:00" || timeSlot == "21:00" || timeSlot == "00:00" || timeSlot == "03:00")
-            {
-                rejectReason = "Open shop hanya buka sampai jam 19:00 (malam hari tutup).";
-                return false;
-            }
-        }
-
-        // 2. ATURAN EXPLORATION:
-        // - Bisa buka kapan saja (Senin - Minggu)
-        // - Hanya bisa dari jam 06:00 pagi sampai 15:00 sore
-        if (name.Contains("exploration") || id.Contains("exploration") || name.Contains("forage"))
-        {
-            if (timeSlot != "06:00" && timeSlot != "09:00" && timeSlot != "12:00")
-            {
-                rejectReason = "Exploration hanya dibuka jam 06:00 pagi sampai 15:00 sore.";
-                return false;
-            }
-        }
-
-        // 3. ATURAN GUILD / ORGANIZATION:
-        if (name.Contains("visit"))
-        {
-            // Visit hanya hari Mon, Wed, Sat 8-12
-            if (dayIndex != 0 && dayIndex != 2 && dayIndex != 5)
-            {
-                rejectReason = "Visit hanya tersedia pada hari Senin, Rabu, dan Sabtu.";
-                return false;
-            }
-            if (timeSlot != "09:00")
-            {
-                rejectReason = "Visit hanya dibuka jam 08:00 – 12:00 (slot 09:00).";
-                return false;
-            }
-        }
-
-        if (name.Contains("commission") || name.Contains("appointment"))
-        {
-            // Mon-Sat 8-17
             if (dayIndex == 6)
             {
-                rejectReason = "Guild tutup pada hari Minggu.";
+                rejectReason = "Open shop is closed on Sunday (Mon-Sat only).";
                 return false;
             }
-            if (timeSlot == "06:00" || timeSlot == "18:00" || timeSlot == "21:00" || timeSlot == "00:00" || timeSlot == "03:00")
+            if (start < 8 * 60)
             {
-                rejectReason = "Guild hanya buka jam 08:00 – 17:00.";
+                rejectReason = "Open shop starts at 08:00. Pick 09:00 or later.";
+                return false;
+            }
+            if (end > 19 * 60)
+            {
+                rejectReason = "Open shop must close by 19:00. Pick an earlier or shorter session.";
                 return false;
             }
         }
 
-        // Craft & Processing: Bebas ditempatkan kapan saja (Daily)
+        // Exploration: setiap hari, 06:00-15:00. Durasi 3h atau 6h.
+        if (isExploration)
+        {
+            if (start < 6 * 60)
+            {
+                rejectReason = "Exploration starts at 06:00.";
+                return false;
+            }
+            if (end > 15 * 60)
+            {
+                rejectReason = "Exploration must finish by 15:00. Pick an earlier or shorter session.";
+                return false;
+            }
+        }
+
+        // Visit: Senin, Rabu, Sabtu, 08:00-12:00.
+        if (isVisit)
+        {
+            if (dayIndex != 0 && dayIndex != 2 && dayIndex != 5)
+            {
+                rejectReason = "Visit is only available on Mon, Wed and Sat.";
+                return false;
+            }
+            if (start < 8 * 60 || end > 12 * 60)
+            {
+                rejectReason = "Visit runs 08:00-12:00 only.";
+                return false;
+            }
+            if (slots > 1)
+            {
+                rejectReason = "Visit is a 3-hour activity.";
+                return false;
+            }
+        }
+
+        // Appointment / Commission: Senin-Sabtu, 08:00-17:00.
+        if (isGuild)
+        {
+            if (dayIndex == 6)
+            {
+                rejectReason = "The guild is closed on Sunday.";
+                return false;
+            }
+            if (start < 8 * 60 || end > 17 * 60)
+            {
+                rejectReason = "Guild activities run 08:00-17:00.";
+                return false;
+            }
+        }
+
+        // Craft & Processing: kapan saja, 3 jam (1 slot).
+        if ((isCraft || isProcessing) && slots > 1)
+        {
+            rejectReason = (isCraft ? "Craft" : "Processing") + " is a 3-hour activity.";
+            return false;
+        }
+
         return true;
+    }
+
+    public static int SlotStartMinutes(string timeSlot)
+    {
+        if (string.IsNullOrEmpty(timeSlot)) return -1;
+        string[] parts = timeSlot.Split(':');
+        if (parts.Length < 2) return -1;
+        if (!int.TryParse(parts[0], out int h) || !int.TryParse(parts[1], out int m)) return -1;
+        return h * 60 + m;
+    }
+
+    public static int SlotIndex(string timeSlot)
+    {
+        if (string.IsNullOrEmpty(timeSlot)) return -1;
+        for (int i = 0; i < TimeSlots.Length; i++)
+        {
+            if (TimeSlots[i] == timeSlot) return i;
+        }
+        return -1;
+    }
+
+    /// <summary>Slot ini dipakai sebagai jam kedua dari kartu 6 jam sebelumnya.</summary>
+    public bool IsSlotReserved(int dayIndex, string timeSlot)
+    {
+        return GetReservationSourceSlot(dayIndex, timeSlot) != null;
+    }
+
+    /// <summary>Slot start dari kartu 6 jam yang memakai slot ini, atau null.</summary>
+    public string GetReservationSourceSlot(int dayIndex, string timeSlot)
+    {
+        int idx = SlotIndex(timeSlot);
+        if (idx <= 0) return null;
+
+        ActivityData prev = GetPlan(dayIndex, TimeSlots[idx - 1]);
+        if (prev != null && prev.slotsCount > 1) return TimeSlots[idx - 1];
+        return null;
+    }
+
+    public bool IsSlotBlocked(int dayIndex, string timeSlot)
+    {
+        return GetPlan(dayIndex, timeSlot) != null || IsSlotReserved(dayIndex, timeSlot);
+    }
+
+    /// <summary>Kartu yang mengisi slot ini (termasuk sesi 6 jam yang mulai di slot sebelumnya).</summary>
+    public ActivityData GetPlanCoveringSlot(int dayIndex, string timeSlot)
+    {
+        ActivityData own = GetPlan(dayIndex, timeSlot);
+        if (own != null) return own;
+
+        string sourceSlot = GetReservationSourceSlot(dayIndex, timeSlot);
+        return sourceSlot != null ? GetPlan(dayIndex, sourceSlot) : null;
+    }
+
+    /// <summary>
+    /// Cek apakah sebuah kartu boleh menempati slot ini (durasi + slot berikutnya).
+    /// </summary>
+    public bool CanPlaceAt(int dayIndex, string timeSlot, ActivityData activity, out string reason)
+    {
+        reason = string.Empty;
+        if (activity == null) return false;
+
+        if (IsSlotBlocked(dayIndex, timeSlot))
+        {
+            reason = "That slot is already taken.";
+            return false;
+        }
+
+        if (!ValidateActivitySlot(activity, dayIndex, timeSlot, out reason)) return false;
+
+        if (activity.slotsCount > 1)
+        {
+            int idx = SlotIndex(timeSlot);
+            if (idx < 0 || idx + 1 >= TimeSlots.Length)
+            {
+                reason = "A 6-hour session cannot start that late.";
+                return false;
+            }
+            if (IsSlotBlocked(dayIndex, TimeSlots[idx + 1]))
+            {
+                reason = "The next 3-hour slot is already taken.";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Cek apakah kartu yang sudah ada boleh diubah menjadi 6 jam.
+    /// </summary>
+    public bool CanChangeToSlotsCount(int dayIndex, string timeSlot, ActivityData activity, int newSlots, out string reason)
+    {
+        reason = string.Empty;
+        if (activity == null) return false;
+        if (newSlots <= 1) return true;
+
+        int idx = SlotIndex(timeSlot);
+        if (idx < 0 || idx + 1 >= TimeSlots.Length)
+        {
+            reason = "A 6-hour session cannot start that late.";
+            return false;
+        }
+
+        string nextSlot = TimeSlots[idx + 1];
+        if (GetPlan(dayIndex, nextSlot) != null || IsSlotReserved(dayIndex, nextSlot))
+        {
+            reason = "The next slot is already taken. Pick another time.";
+            return false;
+        }
+
+        ActivityData test = activity.Clone();
+        test.slotsCount = newSlots;
+        return ValidateActivitySlot(test, dayIndex, timeSlot, out reason);
     }
 
     #endregion
@@ -428,7 +658,7 @@ public class GameManager : MonoBehaviour
         string prefix = dayIndex + "_";
         foreach (var key in weeklyPlan.Keys)
         {
-            if (key.StartsWith(prefix)) count++;
+            if (key.StartsWith(prefix)) count += Mathf.Max(1, weeklyPlan[key] != null ? weeklyPlan[key].slotsCount : 1);
         }
         return count;
     }
@@ -439,7 +669,7 @@ public class GameManager : MonoBehaviour
         string prefix = dayIndex + "_";
         foreach (var kvp in weeklyPlan)
         {
-            if (kvp.Key.StartsWith(prefix) && kvp.Value.category != "Rest") count++;
+            if (kvp.Key.StartsWith(prefix) && kvp.Value.category != "Rest") count += Mathf.Max(1, kvp.Value.slotsCount);
         }
         return count;
     }
@@ -466,15 +696,25 @@ public class GameManager : MonoBehaviour
         InventoryChanged?.Invoke();
     }
 
+    public void RestoreEnergy()
+    {
+        energy = EnergyMax;
+        InventoryChanged?.Invoke();
+    }
+
     public void AdvanceDay()
     {
         currentDay = (CurrentDay + 1) % 7;
+        CitySlotIndex = 0;
+        ClearBonusClaims();
         Debug.Log($"[GameManager] Hari berikutnya: {CurrentDayName}");
     }
 
     public void StartGameLoop()
     {
         IsGameStarted = true;
+        CitySlotIndex = 0;
+        ClearBonusClaims();
         SceneManager.LoadScene(citySceneName);
     }
 

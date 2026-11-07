@@ -6,25 +6,22 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Menjalankan rencana hari ini di CityOverWorld: karakter berjalan ke lokasi
-/// setiap aktivitas, berdiam di sana selama durasi aktivitas, lalu lanjut ke
-/// aktivitas berikutnya sesuai urutan jam pada buku planner.
+/// CityOverWorld bebas: pemain bergerak sendiri. Jam berjalan per slot 3 jam.
+/// Kalau pemain berada di lokasi yang sesuai jadwal saat slot berjalan, dia
+/// mendapat bonus (gold + XP), dan Exploration menghasilkan bahan acak.
 /// </summary>
 public class DailyScheduleRunner : MonoBehaviour
 {
     public enum Phase
     {
         Idle,
-        Walking,
-        Doing,
-        Missing,
+        Playing,
         Complete,
-        NoPlan,
         NoGameManager
     }
 
     [Header("Referensi Scene")]
-    [Tooltip("Karakter yang akan dijalankan. Kosong = dicari otomatis.")]
+    [Tooltip("Karakter pemain. Kosong = dicari otomatis.")]
     [SerializeField] private CharacterMovement character;
 
     [Header("HUD")]
@@ -39,36 +36,42 @@ public class DailyScheduleRunner : MonoBehaviour
     [SerializeField] private GameObject nextDayButton;
 
     [Header("Pengaturan")]
-    [Tooltip("Durasi nyata (detik) untuk menyelesaikan satu aktivitas. Satu slot = 3 jam di jam game.")]
-    [SerializeField] private float secondsPerActivity = 7f;
+    [Tooltip("Durasi nyata (detik) untuk satu slot 3 jam di jam game.")]
+    [SerializeField] private float secondsPerSlot = 30f;
 
-    [Tooltip("Jeda sebelum melewati aktivitas yang lokasinya tidak ditemukan.")]
-    [SerializeField] private float missingLocationDelay = 1.5f;
+    [Tooltip("Jarak pemain ke lokasi agar dianggap mengikuti jadwal.")]
+    [SerializeField] private float arrivalRadius = 2.4f;
+
+    [Tooltip("Lama pesan bonus/drop tampil di HUD.")]
+    [SerializeField] private float messageDuration = 4f;
 
     [SerializeField] private string plannerSceneName = "MulaiGame";
 
     private GameManager gameManager;
-    private readonly List<ActivityData> today = new List<ActivityData>();
     private readonly List<LocationPoint> locations = new List<LocationPoint>();
 
-    private int stepIndex = -1;
-    private float activityElapsed;
-    private float missingElapsed;
-    private bool paused;
+    private int slotIndex;
+    private float slotElapsed;
+    private bool dayComplete;
+    private bool transitioning;
+    private string dayText = string.Empty;
+    private string message = string.Empty;
+    private float messageUntil;
+
     private Phase phase = Phase.Idle;
-    private LocationPoint activeLocation;
 
     public Phase CurrentPhase => phase;
-    public bool IsControllingMovement => !paused && (phase == Phase.Walking || phase == Phase.Doing);
-    public int CurrentStep => stepIndex;
-    public int TodayCount => today.Count;
+    public bool IsControllingMovement => false;
+    public bool IsTransitioning => transitioning;
+    public int CurrentStep => slotIndex;
+    public int CurrentSlotIndex => slotIndex;
     public string CurrentActivityName { get; private set; } = string.Empty;
     public string CurrentLocationName { get; private set; } = string.Empty;
 
-    public float SecondsPerActivity
+    public float SecondsPerSlot
     {
-        get => secondsPerActivity;
-        set => secondsPerActivity = Mathf.Max(0.25f, value);
+        get => secondsPerSlot;
+        set => secondsPerSlot = Mathf.Max(1f, value);
     }
 
     private void Start()
@@ -78,23 +81,22 @@ public class DailyScheduleRunner : MonoBehaviour
             character = FindFirstObjectByType<CharacterMovement>();
         }
 
+        if (pauseButton != null) pauseButton.SetActive(false);
+
         StartDay();
     }
 
-    /// <summary>
-    /// Memuat rencana untuk hari aktif saat ini dan memulai langkah pertama.
-    /// Juga dipakai ulang saat pemain menekan "Next day".
-    /// </summary>
+    /// <summary>Memuat hari dan slot yang tersimpan lalu menjalankan jam.</summary>
     public void StartDay()
     {
         gameManager = GameManager.Instance;
-        paused = false;
-        activityElapsed = 0f;
-        missingElapsed = 0f;
-        stepIndex = -1;
-        activeLocation = null;
-        today.Clear();
-        UpdatePauseLabel();
+        slotElapsed = 0f;
+        dayComplete = false;
+        transitioning = false;
+        message = string.Empty;
+        messageUntil = 0f;
+        locations.Clear();
+        locations.AddRange(FindObjectsByType<LocationPoint>(FindObjectsInactive.Exclude));
 
         if (gameManager == null)
         {
@@ -105,241 +107,204 @@ public class DailyScheduleRunner : MonoBehaviour
             return;
         }
 
+        slotIndex = gameManager.CitySlotIndex;
         int day = gameManager.CurrentDay;
-        string dayText = $"{GameManager.DayShortNames[day].ToUpperInvariant()}  -  DAY {day + 1}";
-        today.AddRange(gameManager.GetPlansForDay(day));
-        CacheLocations();
+        dayText = $"{GameManager.DayShortNames[day].ToUpperInvariant()}  -  DAY {day + 1}  -  WEEK {gameManager.CurrentWeek}";
 
-        if (today.Count == 0)
-        {
-            phase = Phase.NoPlan;
-            SetHud(dayText, "--:--", "No activities planned",
-                "Open the planner or go to the next day.", "", 0f);
-            SetButtons(false, true);
-            Debug.Log($"[Routine] Day {day + 1}: no activities planned.");
-            return;
-        }
-
-        SetButtons(true, false);
-        stepIndex = 0;
-        BeginStep(dayText);
-    }
-
-    private void CacheLocations()
-    {
-        locations.Clear();
-        locations.AddRange(FindObjectsByType<LocationPoint>(FindObjectsSortMode.None));
-    }
-
-    private void BeginStep(string dayText)
-    {
-        ActivityData activity = today[stepIndex];
-        CurrentActivityName = activity.activityName;
-        activeLocation = ResolveLocation(activity);
-
-        if (dayLabel != null) dayLabel.text = dayText;
-        if (activityLabel != null) activityLabel.text = activity.activityName;
-        if (clockLabel != null) clockLabel.text = activity.timeSlot;
-        if (progressFill != null) progressFill.fillAmount = 0f;
-
-        if (nextLabel != null)
-        {
-            nextLabel.text = stepIndex + 1 < today.Count
-                ? $"Next: {today[stepIndex + 1].activityName} at {today[stepIndex + 1].timeSlot}"
-                : "Last activity of the day";
-        }
-
-        if (activeLocation == null)
-        {
-            phase = Phase.Missing;
-            missingElapsed = 0f;
-            CurrentLocationName = activity.locationName;
-            if (locationLabel != null) locationLabel.text = "Location not found: " + activity.locationName;
-            Debug.LogWarning($"[Routine] Location '{activity.locationName}' not found for {activity.activityName}.");
-            return;
-        }
-
-        WalkTo(activeLocation);
-    }
-
-    private void WalkTo(LocationPoint location)
-    {
-        if (character == null)
-        {
-            phase = Phase.Missing;
-            missingElapsed = 0f;
-            if (locationLabel != null) locationLabel.text = "Character not found in scene.";
-            return;
-        }
-
-        phase = Phase.Walking;
-        CurrentLocationName = location.LocationName;
-        if (locationLabel != null) locationLabel.text = "Walking to " + location.LocationName;
-        if (progressFill != null) progressFill.fillAmount = 0f;
-
-        Vector3 destination = location.GetDestination(character.transform.position.y);
-        Debug.Log($"[Routine] Step {stepIndex + 1}/{today.Count}: walking to {location.LocationName} for {CurrentActivityName}.");
-        character.MoveTo(destination, OnArrived);
-    }
-
-    private void OnArrived()
-    {
-        if (phase != Phase.Walking || paused) return;
-
-        phase = Phase.Doing;
-        activityElapsed = 0f;
-        if (locationLabel != null && activeLocation != null)
-        {
-            locationLabel.text = "At " + activeLocation.LocationName;
-        }
-
-        Debug.Log($"[Routine] Doing {CurrentActivityName} at {CurrentLocationName}.");
+        phase = Phase.Playing;
+        SetButtons(false, false);
+        UpdateHud();
+        Debug.Log($"[FreePlay] Day {day + 1}, slot {GameManager.TimeSlots[slotIndex]}.");
     }
 
     private void Update()
     {
-        if (paused) return;
+        if (gameManager == null || transitioning) return;
 
-        if (phase == Phase.Doing)
+        if (!dayComplete)
         {
-            activityElapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(activityElapsed / secondsPerActivity);
+            slotElapsed += Time.deltaTime;
+            TryAwardBonus();
 
-            if (progressFill != null) progressFill.fillAmount = progress;
-            UpdateClock(progress);
-
-            if (progress >= 1f) CompleteStep();
-        }
-        else if (phase == Phase.Missing)
-        {
-            missingElapsed += Time.deltaTime;
-            if (missingElapsed >= missingLocationDelay) CompleteStep();
-        }
-    }
-
-    private void UpdateClock(float progress)
-    {
-        if (clockLabel == null || stepIndex < 0 || stepIndex >= today.Count) return;
-        clockLabel.text = FormatTime(today[stepIndex].timeSlot, progress * 180f);
-    }
-
-    private static string FormatTime(string slot, float addMinutes)
-    {
-        if (string.IsNullOrEmpty(slot)) return "--:--";
-
-        string[] parts = slot.Split(':');
-        int hours;
-        int minutes;
-        if (parts.Length != 2 ||
-            !int.TryParse(parts[0], out hours) ||
-            !int.TryParse(parts[1], out minutes))
-        {
-            return slot;
-        }
-
-        int total = hours * 60 + minutes + Mathf.RoundToInt(addMinutes);
-        total = ((total % 1440) + 1440) % 1440;
-        return $"{total / 60:00}:{total % 60:00}";
-    }
-
-    private void CompleteStep()
-    {
-        Debug.Log($"[Routine] Finished {CurrentActivityName}.");
-
-        // Eksekusi aktivitas dan berikan Plan Match Bonus
-        if (stepIndex >= 0 && stepIndex < today.Count && GameManager.Instance != null)
-        {
-            ActivityData act = today[stepIndex];
-            string actName = act.activityName.ToLowerInvariant();
-
-            // Bonus mengikuti jadwal
-            GameManager.Instance.AwardPlanMatchBonus(act.activityName);
-
-            if (actName.Contains("exploration") || actName.Contains("forage"))
+            if (slotElapsed >= secondsPerSlot)
             {
-                var rewards = GameManager.Instance.ExecuteExplorationDrops();
-                Debug.Log($"[Exploration] Drop bahan didapat: {string.Join(", ", rewards)}");
-            }
-            else if (actName.Contains("craft"))
-            {
-                bool success = GameManager.Instance.ExecuteCraft(act.selectedRecipe);
-                if (success)
-                    Debug.Log($"[Craft] Berhasil membuat {act.selectedRecipe}!");
-                else
-                    Debug.Log($"[Craft] Gagal membuat {act.selectedRecipe} karena bahan belum mencukupi.");
-            }
-            else if (actName.Contains("shop"))
-            {
-                int earnings = UnityEngine.Random.Range(25, 45) * act.slotsCount;
-                GameManager.Instance.AddGold(earnings);
-                Debug.Log($"[Shop] Toko dibuka! Keuntungan penjualan: +{earnings} Gold.");
+                AdvanceSlot();
             }
         }
 
-        stepIndex++;
-
-        if (stepIndex >= today.Count)
-        {
-            FinishDay();
-        }
-        else
-        {
-            BeginStep(dayLabel != null ? dayLabel.text : "");
-        }
+        UpdateHud();
     }
 
-    private void FinishDay()
+    private ActivityData CurrentPlan()
     {
-        phase = Phase.Complete;
-        if (activityLabel != null) activityLabel.text = "Day complete";
-        if (locationLabel != null) locationLabel.text = "All planned activities are done.";
-        if (nextLabel != null) nextLabel.text = string.Empty;
-        if (progressFill != null) progressFill.fillAmount = 1f;
-        SetButtons(false, true);
-        Debug.Log("[Routine] Day complete.");
+        if (gameManager == null) return null;
+        return gameManager.GetPlanCoveringSlot(gameManager.CurrentDay, GameManager.TimeSlots[slotIndex]);
     }
 
-    /// <summary>
-    /// Menjeda / melanjutkan rutinitas. Saat dijeda pemain bisa mengklik lokasi
-    /// secara manual seperti biasa.
-    /// </summary>
-    public void TogglePause()
+    private void TryAwardBonus()
     {
-        if (phase != Phase.Walking && phase != Phase.Doing) return;
+        ActivityData plan = CurrentPlan();
+        if (plan == null) return;
+        if (gameManager.HasBonusClaim(gameManager.CurrentDay, plan.timeSlot)) return;
 
-        paused = !paused;
-        UpdatePauseLabel();
+        LocationPoint target = ResolveLocation(plan);
+        if (target == null) return;
 
-        if (paused)
+        CharacterMovement player = character != null ? character : FindFirstObjectByType<CharacterMovement>();
+        if (player == null) return;
+
+        Vector3 destination = target.GetDestination(player.transform.position.y);
+        if (Vector3.Distance(player.transform.position, destination) <= arrivalRadius)
         {
-            if (character != null) character.StopMoving();
-            if (locationLabel != null)
-            {
-                locationLabel.text = phase == Phase.Doing
-                    ? "Paused at " + CurrentLocationName
-                    : "Paused - heading to " + CurrentLocationName;
-            }
-        }
-        else if (phase == Phase.Walking)
-        {
-            WalkTo(activeLocation);
-        }
-        else if (activeLocation != null && character != null &&
-                 Vector3.Distance(character.transform.position,
-                     activeLocation.GetDestination(character.transform.position.y)) > 0.5f)
-        {
-            // Pemain sempat berjalan manual saat dijeda: kembali ke lokasi aktivitas.
-            WalkTo(activeLocation);
-        }
-        else if (locationLabel != null)
-        {
-            locationLabel.text = "At " + CurrentLocationName;
+            ClaimBonus(plan, target.LocationName);
         }
     }
 
     /// <summary>
-    /// Lanjut ke hari berikutnya tanpa memuat ulang scene.
+    /// Dipanggil saat pemain mengklik sebuah lokasi (mis. masuk ke rumah).
+    /// Bonus hanya diberikan kalau lokasi itu sesuai rencana slot saat ini.
     /// </summary>
+    public void ClaimBonusAtLocation(LocationPoint location)
+    {
+        if (gameManager == null || location == null) return;
+
+        ActivityData plan = CurrentPlan();
+        if (plan == null) return;
+        if (gameManager.HasBonusClaim(gameManager.CurrentDay, plan.timeSlot)) return;
+
+        string planTarget = Normalize(plan.locationName);
+        string clicked = Normalize(location.LocationName);
+        bool sameHome = planTarget.Contains("home") && !planTarget.Contains("drying") &&
+                        clicked.Contains("home") && !clicked.Contains("drying");
+        if (planTarget != clicked && !sameHome) return;
+
+        ClaimBonus(plan, location.LocationName);
+    }
+
+    private void ClaimBonus(ActivityData plan, string locationName)
+    {
+        if (plan == null || gameManager == null) return;
+
+        gameManager.AwardPlanMatchBonus(plan.activityName);
+        gameManager.MarkBonusClaimed(gameManager.CurrentDay, plan.timeSlot);
+
+        string text = $"On schedule (+15 G, +25 XP) at {locationName}.";
+        string actName = (plan.activityName ?? string.Empty).ToLowerInvariant();
+        if (actName.Contains("exploration"))
+        {
+            List<string> drops = gameManager.ExecuteExplorationDrops();
+            if (drops.Count > 0) text += " Found: " + string.Join(", ", drops) + ".";
+        }
+
+        ShowMessage(text);
+        Debug.Log("[FreePlay] " + text);
+    }
+
+    private void AdvanceSlot()
+    {
+        slotElapsed = 0f;
+        slotIndex++;
+
+        if (slotIndex >= GameManager.TimeSlots.Length)
+        {
+            slotIndex = GameManager.TimeSlots.Length - 1;
+            dayComplete = true;
+            phase = Phase.Complete;
+            gameManager.CitySlotIndex = 0;
+            ShowMessage("Day complete. Open the planner or start the next day.");
+            SetButtons(false, true);
+            return;
+        }
+
+        gameManager.CitySlotIndex = slotIndex;
+        ShowMessage(string.Empty);
+        SetButtons(false, false);
+    }
+
+    private void UpdateHud()
+    {
+        if (gameManager == null) return;
+
+        ActivityData plan = CurrentPlan();
+        LocationPoint target = plan != null ? ResolveLocation(plan) : null;
+        bool claimed = plan != null && gameManager.HasBonusClaim(gameManager.CurrentDay, plan.timeSlot);
+
+        int displaySlot = dayComplete ? GameManager.TimeSlots.Length - 1 : slotIndex;
+        float progress = dayComplete ? 1f : Mathf.Clamp01(slotElapsed / secondsPerSlot);
+        string clock = dayComplete ? "06:00" : FormatTime(GameManager.TimeSlots[displaySlot], progress * 180f);
+
+        if (dayLabel != null) dayLabel.text = dayText;
+        if (clockLabel != null) clockLabel.text = clock;
+        if (progressFill != null) progressFill.fillAmount = progress;
+
+        CurrentActivityName = plan != null ? plan.activityName : "Free time";
+        CurrentLocationName = target != null ? target.LocationName : (plan != null ? plan.locationName : string.Empty);
+
+        if (activityLabel != null)
+        {
+            activityLabel.text = dayComplete ? "Day complete" : CurrentActivityName;
+        }
+
+        if (locationLabel != null)
+        {
+            if (dayComplete)
+            {
+                locationLabel.text = "All slots are done. Well played.";
+            }
+            else if (plan == null)
+            {
+                locationLabel.text = "No schedule now. Explore freely.";
+            }
+            else if (target == null)
+            {
+                locationLabel.text = "Location not found: " + plan.locationName;
+            }
+            else if (claimed)
+            {
+                locationLabel.text = "On schedule. Bonus already earned.";
+            }
+            else
+            {
+                locationLabel.text = "Follow the plan: go to " + target.LocationName + " for a bonus.";
+            }
+        }
+
+        if (nextLabel != null)
+        {
+            if (Time.unscaledTime < messageUntil && !string.IsNullOrEmpty(message))
+            {
+                nextLabel.text = message;
+            }
+            else
+            {
+                nextLabel.text = NextPlanText();
+            }
+        }
+    }
+
+    private string NextPlanText()
+    {
+        if (gameManager == null || dayComplete) return string.Empty;
+
+        for (int i = slotIndex + 1; i < GameManager.TimeSlots.Length; i++)
+        {
+            ActivityData next = gameManager.GetPlan(gameManager.CurrentDay, GameManager.TimeSlots[i]);
+            if (next != null)
+            {
+                return $"Next: {next.activityName} at {next.timeSlot}";
+            }
+        }
+
+        return "No more plans today.";
+    }
+
+    private void ShowMessage(string text)
+    {
+        message = text;
+        messageUntil = string.IsNullOrEmpty(text) ? 0f : Time.unscaledTime + messageDuration;
+    }
+
+    /// <summary>Lanjut ke hari berikutnya tanpa memuat ulang scene.</summary>
     public void NextDay()
     {
         if (gameManager == null) gameManager = GameManager.Instance;
@@ -349,17 +314,28 @@ public class DailyScheduleRunner : MonoBehaviour
         StartDay();
     }
 
-    /// <summary>
-    /// Kembali ke buku planner (rencana tetap tersimpan di GameManager).
-    /// </summary>
+    /// <summary>Kembali ke buku planner (rencana tetap tersimpan di GameManager).</summary>
     public void OpenPlanner()
     {
-        if (character != null) character.StopMoving();
-        paused = true;
+        if (transitioning) return;
+        transitioning = true;
 
+        if (character != null) character.StopMoving();
         if (gameManager != null) gameManager.IsGameStarted = false;
 
         SceneManager.LoadScene(plannerSceneName);
+    }
+
+    /// <summary>Dipanggil oleh WorldInteractionManager sebelum pindah ke House.</summary>
+    public void BeginSceneTransition()
+    {
+        transitioning = true;
+        if (character != null) character.StopMoving();
+    }
+
+    // Kompatibilitas dengan tombol Pause lama (tombolnya disembunyikan).
+    public void TogglePause()
+    {
     }
 
     private LocationPoint ResolveLocation(ActivityData activity)
@@ -382,8 +358,6 @@ public class DailyScheduleRunner : MonoBehaviour
             }
         }
 
-        // Fallback berdasarkan kategori untuk data lama yang nama lokasinya
-        // belum cocok dengan LocationPoint di scene.
         string keyword = activity.category == "Fieldwork" ? "gather"
             : activity.category == "Guild / Organization" ? "guild"
             : "home";
@@ -393,7 +367,7 @@ public class DailyScheduleRunner : MonoBehaviour
             if (Normalize(point.LocationName).Contains(keyword)) return point;
         }
 
-        return locations.Count > 0 ? locations[0] : null;
+        return null;
     }
 
     private static string Normalize(string text)
@@ -408,6 +382,25 @@ public class DailyScheduleRunner : MonoBehaviour
         return builder.ToString();
     }
 
+    private static string FormatTime(string slot, float addMinutes)
+    {
+        if (string.IsNullOrEmpty(slot)) return "--:--";
+
+        string[] parts = slot.Split(':');
+        int hours;
+        int minutes;
+        if (parts.Length != 2 ||
+            !int.TryParse(parts[0], out hours) ||
+            !int.TryParse(parts[1], out minutes))
+        {
+            return slot;
+        }
+
+        int total = hours * 60 + minutes + Mathf.RoundToInt(addMinutes);
+        total = ((total % 1440) + 1440) % 1440;
+        return $"{total / 60:00}:{total % 60:00}";
+    }
+
     private void SetHud(string day, string clock, string activity, string location, string next, float progress)
     {
         if (dayLabel != null) dayLabel.text = day;
@@ -420,12 +413,7 @@ public class DailyScheduleRunner : MonoBehaviour
 
     private void SetButtons(bool canPause, bool showNextDay)
     {
-        if (pauseButton != null) pauseButton.SetActive(canPause);
+        if (pauseButton != null) pauseButton.SetActive(false);
         if (nextDayButton != null) nextDayButton.SetActive(showNextDay);
-    }
-
-    private void UpdatePauseLabel()
-    {
-        if (pauseLabel != null) pauseLabel.text = paused ? "Resume" : "Pause";
     }
 }

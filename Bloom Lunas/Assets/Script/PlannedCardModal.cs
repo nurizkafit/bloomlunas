@@ -76,9 +76,28 @@ public class PlannedCardModal : MonoBehaviour
 
     public void Close()
     {
+        SaveCard();
         if (modalRoot != null) modalRoot.SetActive(false);
         currentCard = null;
-        if (planner != null) planner.RefreshAll();
+        if (planner != null)
+        {
+            planner.RefreshAll();
+            planner.RefreshSlotVisuals();
+        }
+    }
+
+    /// <summary>Menyimpan perubahan opsi kartu ke rencana mingguan.</summary>
+    private void SaveCard()
+    {
+        if (currentCard == null || currentCard.CurrentSlot == null) return;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SavePlan(currentCard.CurrentSlot.dayIndex, currentCard.CurrentSlot.timeSlot, currentCard.Activity);
+        }
+
+        currentCard.RefreshCardVisual();
+        if (planner != null) planner.RefreshSlotVisuals();
     }
 
     private void RefreshContent()
@@ -89,11 +108,11 @@ public class PlannedCardModal : MonoBehaviour
         DropSlot slot = currentCard.CurrentSlot;
 
         string dayName = GameManager.DayShortNames[Mathf.Clamp(slot.dayIndex, 0, 6)].ToUpperInvariant();
-        string timeSpan = $"{slot.timeSlot}–{(act.slotsCount == 2 ? GetNextSlotTime(slot.timeSlot) : GetSlotEndTime(slot.timeSlot))}";
+        string timeSpan = $"{slot.timeSlot}-{(act.slotsCount == 2 ? GetNextSlotTime(slot.timeSlot) : GetSlotEndTime(slot.timeSlot))}";
 
         if (headerTagText != null)
         {
-            headerTagText.text = $"PLANNED CARD · {dayName} {timeSpan}";
+            headerTagText.text = $"PLANNED CARD - {dayName} {timeSpan}";
         }
 
         if (titleText != null)
@@ -124,9 +143,9 @@ public class PlannedCardModal : MonoBehaviour
 
         if (openValueText != null)
         {
-            if (actName.Contains("shop")) openValueText.text = "Mon–Sat 8–19";
-            else if (actName.Contains("exploration")) openValueText.text = "Daily 6–15";
-            else if (actName.Contains("visit")) openValueText.text = "Mon, Wed, Sat 8–12";
+            if (actName.Contains("shop")) openValueText.text = "Mon-Sat 8-19";
+            else if (actName.Contains("exploration")) openValueText.text = "Daily 6-15";
+            else if (actName.Contains("visit")) openValueText.text = "Mon, Wed, Sat 8-12";
             else openValueText.text = "Daily";
         }
 
@@ -159,8 +178,9 @@ public class PlannedCardModal : MonoBehaviour
                 Button btn = CreatePillButton(btnText, isSelected, () =>
                 {
                     act.selectedRecipe = rName;
-                    act.slotsCount = rData.slotsRequired;
-                    act.subtext = $"{rName} – {rData.slotsRequired * 3}h";
+                    act.slotsCount = 1;
+                    act.subtext = $"{rName} - 3h";
+                    SaveCard();
                     RefreshContent();
                 });
             }
@@ -183,6 +203,7 @@ public class PlannedCardModal : MonoBehaviour
                     act.selectedStation = station;
                     act.locationName = station;
                     act.subtext = $"3h - {station}";
+                    SaveCard();
                     RefreshContent();
                 });
             }
@@ -202,8 +223,23 @@ public class PlannedCardModal : MonoBehaviour
                 string label = $"{s} slot{(s > 1 ? "s" : "")} ({s * 3}h)";
                 CreatePillButton(label, isSelected, () =>
                 {
+                    if (s == act.slotsCount)
+                    {
+                        RefreshContent();
+                        return;
+                    }
+
+                    if (s > 1 && currentCard != null && currentCard.CurrentSlot != null && GameManager.Instance != null &&
+                        !GameManager.Instance.CanChangeToSlotsCount(currentCard.CurrentSlot.dayIndex, currentCard.CurrentSlot.timeSlot, act, s, out string reason))
+                    {
+                        if (planner != null) planner.ShowToast(reason);
+                        RefreshContent();
+                        return;
+                    }
+
                     act.slotsCount = s;
                     act.subtext = $"{s * 3}h - {act.locationName}";
+                    SaveCard();
                     RefreshContent();
                 });
             }
@@ -231,14 +267,14 @@ public class PlannedCardModal : MonoBehaviour
         if (!hasAll && missing.Count > 0)
         {
             warningBox.SetActive(true);
-            warningText.text = $"✕ Not in stock: {string.Join(", ", missing)}.";
+            warningText.text = $"Not in stock: {string.Join(", ", missing)}.";
             warningText.color = new Color(0.686f, 0.227f, 0.208f, 1f);
             warningBox.GetComponent<Image>().color = new Color(0.976f, 0.882f, 0.871f, 1f);
         }
         else
         {
             warningBox.SetActive(true);
-            warningText.text = "✓ Ready: all ingredients are in stock.";
+            warningText.text = "Ready: all ingredients are in stock.";
             warningText.color = new Color(0.208f, 0.525f, 0.239f, 1f);
             warningBox.GetComponent<Image>().color = new Color(0.898f, 0.953f, 0.898f, 1f);
         }
@@ -351,7 +387,7 @@ public class PlannedCardModal : MonoBehaviour
         vlg.childControlHeight = false;
 
         // Header
-        headerTagText = AddLabel(panelObj, "PLANNED CARD · MON 09:00-12:00", 11, new Color(0.5f, 0.47f, 0.4f, 1f), FontStyles.Bold);
+        headerTagText = AddLabel(panelObj, "PLANNED CARD - MON 09:00-12:00", 11, new Color(0.5f, 0.47f, 0.4f, 1f), FontStyles.Bold);
         titleText = AddLabel(panelObj, "Craft", 22, new Color(0.2f, 0.17f, 0.12f, 1f), FontStyles.Bold);
         actionSubText = AddLabel(panelObj, "Actions: Prepare, Brew, Concoct.", 12, new Color(0.4f, 0.37f, 0.32f, 1f), FontStyles.Normal);
 
@@ -390,7 +426,7 @@ public class PlannedCardModal : MonoBehaviour
         wHlg.padding = new RectOffset(12, 12, 8, 8);
         wHlg.childControlWidth = true;
         wHlg.childControlHeight = false;
-        warningText = AddLabel(warningBox, "✕ Not in stock: ...", 11, new Color(0.686f, 0.227f, 0.208f, 1f), FontStyles.Normal);
+        warningText = AddLabel(warningBox, "Not in stock: ...", 11, new Color(0.686f, 0.227f, 0.208f, 1f), FontStyles.Normal);
 
         // Bottom Buttons Row
         GameObject btnRow = new GameObject("BtnRow", typeof(RectTransform), typeof(HorizontalLayoutGroup));

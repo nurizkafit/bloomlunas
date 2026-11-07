@@ -135,6 +135,11 @@ public class DraggableCard : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
         RefreshVisual();
     }
 
+    public void RefreshCardVisual()
+    {
+        RefreshVisual();
+    }
+
     private void RefreshVisual()
     {
         if (activity == null) return;
@@ -228,6 +233,15 @@ public class DraggableCard : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
         }
 
         currentSlot = GetComponentInParent<DropSlot>();
+
+        // Kartu 6 jam tidak bisa dipindah (agar slot cadangannya tidak bentrok).
+        if (currentSlot != null && activity != null && activity.slotsCount > 1)
+        {
+            eventData.pointerDrag = null;
+            if (planner != null) planner.ShowToast("This is a 6h card. Remove it to move it.");
+            return;
+        }
+
         parentAfterDrag = null;
         BeginDrag(eventData);
     }
@@ -319,6 +333,12 @@ public class DraggableCard : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
             {
                 SnapToSlot();
                 ShowDeleteButton(true);
+                return;
+            }
+
+            if (target.IsReserved)
+            {
+                Reject();
                 return;
             }
 

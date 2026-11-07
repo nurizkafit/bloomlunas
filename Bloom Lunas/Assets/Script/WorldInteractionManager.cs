@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -101,16 +102,27 @@ public class WorldInteractionManager : MonoBehaviour
             LocationPoint location = hit.collider.GetComponentInParent<LocationPoint>();
             if (location != null)
             {
-                // Jika karakter sedang bergerak otomatis mengikuti rutinitas jadwal,
-                // jeda rutinitas agar pemain bisa menjelajah manual di luar jadwal
-                if (scheduleRunner != null && scheduleRunner.IsControllingMovement)
-                {
-                    scheduleRunner.TogglePause();
-                }
-
                 OnLocationClicked(location);
             }
         }
+    }
+
+    private static bool TryGetSceneForLocation(string key, out string sceneName)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            sceneName = null;
+            return false;
+        }
+
+        if (key.Contains("drying")) { sceneName = "HomeDrying"; return true; }
+        if (key.Contains("gather")) { sceneName = "GatheringArea"; return true; }
+        if (key.Contains("market")) { sceneName = "Market"; return true; }
+        if (key.Contains("guild")) { sceneName = "MerchantGuild"; return true; }
+        if (key.Contains("home")) { sceneName = "House"; return true; }
+
+        sceneName = null;
+        return false;
     }
 
     private void OnLocationClicked(LocationPoint location)
@@ -134,9 +146,24 @@ public class WorldInteractionManager : MonoBehaviour
         // Dapatkan titik tujuan dengan ketinggian Y karakter saat ini
         Vector3 destination = location.GetDestination(playerCharacter.transform.position.y);
 
-        // Perintahkan karakter berjalan ke lokasi; setelah tiba, tampilkan pop-up jika ada
+        string locationKey = (location.LocationName ?? string.Empty).ToLowerInvariant();
+
+        // Perintahkan karakter berjalan ke lokasi; setelah tiba, buka aksi lokasinya.
         playerCharacter.MoveTo(destination, () =>
         {
+            if (TryGetSceneForLocation(locationKey, out string sceneName))
+            {
+                if (scheduleRunner == null) scheduleRunner = FindFirstObjectByType<DailyScheduleRunner>();
+                if (scheduleRunner != null)
+                {
+                    scheduleRunner.ClaimBonusAtLocation(location);
+                    scheduleRunner.BeginSceneTransition();
+                }
+
+                SceneManager.LoadScene(sceneName);
+                return;
+            }
+
             if (popupUI != null)
             {
                 popupUI.ShowPopup(location);
